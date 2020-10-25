@@ -1,11 +1,11 @@
-import { EXPIRETIME, MESSAGES } from './../config/constants';
+import { EXPIRETIME, MESSAGES } from './../../config/constants';
 import { IResolvers } from 'graphql-tools';
-import { COLLECTIONS } from '../config/constants';
-import JWT from '../lib/jwt';
+import { COLLECTIONS } from '../../config/constants';
+import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
 
 
-const resolversQuery: IResolvers = {
+const resolversUsersQuery: IResolvers = {
 
 
 
@@ -106,8 +106,9 @@ const resolversQuery: IResolvers = {
         message: 'Usuario autenticado correctamente mediante el token',
         user: Object.values(info)[0] // información relacionada con el usuario
       };
-    }
+    },
+    
    },
  };
 
-export default resolversQuery;
+export default resolversUsersQuery;
