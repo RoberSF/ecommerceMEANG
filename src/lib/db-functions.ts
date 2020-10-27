@@ -46,4 +46,19 @@ export const findOneElement = async (database: Db, collection: string, filter: o
     return database
     .collection(collection)
     .findOne(filter);
-}
+};
+
+
+// Con esta inserta uno elemento
+export const inserOneElement = async (database: Db, collection: string, document:object) => {
+      database
+        .collection(collection)
+        .insertOne(document)
+};
+
+// Con esta inserta varios elementos/objetos
+export const inserManyElements = async (database: Db, collection: string, documents:Array<object>) => {
+      database
+        .collection(collection)
+        .insertMany(documents)
+};
