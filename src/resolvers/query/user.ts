@@ -3,7 +3,7 @@ import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
-import { findOneElement } from '../../lib/db-functions';
+import { findOneElement, findElements } from '../../lib/db-functions';
 
 
 const resolversUsersQuery: IResolvers = {
@@ -40,7 +40,7 @@ const resolversUsersQuery: IResolvers = {
 //**************************************************************************************** */
           status: true,
           message: 'Lista de usuarios cargada correctamente',
-          users: await db.collection(COLLECTIONS.USERS).find().toArray(),
+          users: await findElements(db, COLLECTIONS.USERS)
         };
       } catch (error) {
         console.log(error);
