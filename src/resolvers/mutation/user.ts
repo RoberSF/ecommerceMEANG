@@ -3,7 +3,7 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import bcrypt from 'bcrypt';
-
+import { asingDocumentId } from '../../lib/db-functions';
 
 
 
@@ -25,17 +25,7 @@ const resolversUserMutation: IResolvers = {
       }
 
       // Comprobar el último usuario registrado para asignar ID
-      const lastUser = await db
-        .collection(COLLECTIONS.USERS)
-        .find()
-        .limit(1)
-        .sort({ registerDate: -1 }) // Ordenamos de manera descente
-        .toArray(); // Para obtener una lista
-      if (lastUser.length === 0) {
-        user.id = 1;
-      } else {
-        user.id = lastUser[0].id + 1;
-      }
+      user.id = await asingDocumentId(db, COLLECTIONS.USERS, { registerDate: -1 });
 
       // Asignar la fecha en formato ISO en la propiedad registerDate
       user.registerDate = new Date().toISOString();
