@@ -40,3 +40,10 @@ import { Db } from "mongodb";
 //   } else {
 //     user.id = lastUser[0].id + 1;
 //   }
+
+
+export const findOneElement = async (database: Db, collection: string, filter: object) => {
+    return database
+    .collection(collection)
+    .findOne(filter);
+}

@@ -3,6 +3,7 @@ import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
+import { findOneElement } from '../../lib/db-functions';
 
 
 const resolversUsersQuery: IResolvers = {
@@ -58,9 +59,7 @@ const resolversUsersQuery: IResolvers = {
 
     async login(_, { email, password }, { db }) { // El db es la instancia
       try {
-        const user = await db
-          .collection(COLLECTIONS.USERS)
-          .findOne({ email });
+        const user = await findOneElement(db, COLLECTIONS.USERS, {email})
 
         if (user === null) {
           return {
