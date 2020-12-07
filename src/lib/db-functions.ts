@@ -53,16 +53,12 @@ export const findOneElement = async (database: Db, collection: string, filter: o
 
 // Con esta inserta uno elemento
 export const inserOneElement = async (database: Db, collection: string, document:object) => {
-      return await database
-        .collection(collection)
-        .insertOne(document)
+      return await database.collection(collection).insertOne(document)
 };
 
 // Con esta inserta varios elementos/objetos
 export const inserManyElements = async (database: Db, collection: string, documents:Array<object>) => {
-     return await database
-        .collection(collection)
-        .insertMany(documents)
+     return await database.collection(collection).insertMany(documents)
 };
 
 export const findElements = async(database: Db, collection: string, filter:object = {}) => {
@@ -71,4 +67,8 @@ export const findElements = async(database: Db, collection: string, filter:objec
 
 export const updateOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
   return await database.collection(collection).updateOne(filter, {$set: objectUpdated});
+}
+
+export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
+  return await database.collection(collection).findOneAndDelete(filter)
 }

@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { inserOneElement, findOneElement, asingDocumentId, updateOne } from '../../lib/db-functions';
+import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne } from '../../lib/db-functions';
 import GenresService from '../../services/genre.service';
 import slugify from 'slugify';
 
@@ -47,7 +47,6 @@ const resolversGenreMutation: IResolvers = {
             slug: slugify(genre || '', { lower: true })
         };
 
-        console.log(genreObject);
 
         try {
             return await inserOneElement(db,COLLECTIONS.GENRES,genreObject)
@@ -97,29 +96,13 @@ const resolversGenreMutation: IResolvers = {
             }
         };
 
-        // Comprobar que no existe
-        // if (genre){
-        //     const genreCheck = await findOneElement(db,COLLECTIONS.GENRES,{name: genre})
-            
-        //     if (genreCheck !== null) {
-        //         return {
-        //           status: false,
-        //           message: `El género ${genre} está registrado y no puedes registrarlo`,
-        //           user: null
-        //         };
-        //       }
-        // } 
     
-
         // En caso contrario que genere el document para insertarlo
         const filterGenreObjectId = { id: id}
         const objectUpdate = {
             name: genre,
             slug: slugify(genre || '', { lower: true })
         };
-
-        console.log(filterGenreObjectId);
-        console.log(objectUpdate);
 
         try {
             return await updateOne(db,COLLECTIONS.GENRES,filterGenreObjectId, objectUpdate)
@@ -148,12 +131,49 @@ const resolversGenreMutation: IResolvers = {
                 genre: null
             }
         }
+    },
+
+
+
+    async deleteGenre(_, { id }, { db }){
+
+        if (String(id) === '' || String(id) === undefined) {
+            return {
+                status: false,
+                message: `El ${id} de género no se ha especificado correctamente`,
+                genre: null
+            }
+        };
+
+        try {
+            return await deleteOne(db,COLLECTIONS.GENRES,{id: id})
+            .then(
+                result => {
+                    // También hay result.n que nos dice el número de elementos que nos devolvió
+                    if (result.ok === 1) {
+                        return {
+                            status: true,
+                            message: `El género con id: ${id} se borró correctamente`,
+                          };
+                    }
+                    return {
+                        status: false,
+                        message: `Error al borrar género. Inténtalo de nuevo por favor.`,
+                        genre: null
+                    }
+ 
+              })
+        } catch(error) {
+            return {
+                status: false,
+                message: `Error inesperado al borrar género. Inténtalo de nuevo por favor.`,
+                genre: null
+            }
+        }
     }
+    }
+  }
 
-  },
-
-
-};
 
 
 
