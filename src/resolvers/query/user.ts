@@ -43,7 +43,6 @@ const resolversUsersQuery: IResolvers = {
           users: await findElements(db, COLLECTIONS.USERS)
         };
       } catch (error) {
-        console.log(error);
         return {
           status: false,
           message:
@@ -79,9 +78,9 @@ const resolversUsersQuery: IResolvers = {
           status: true,
           message: !passwordCheck ? 'Password y usuario no son correctos, sesión no iniciada' : 'Usuario cargado correctamente',
           token: !passwordCheck ? null : new JWT().sign({ user }, EXPIRETIME.H24),
+          user
         };
       } catch (error) {
-        console.log(error);
         return {
           status: false,
           message: 'Error al cargar el usuario. Comprueba que tienes correctamente todo.',
