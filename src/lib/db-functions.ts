@@ -68,3 +68,7 @@ export const inserManyElements = async (database: Db, collection: string, docume
 export const findElements = async(database: Db, collection: string, filter:object = {}) => {
    return await database.collection(collection).find(filter).toArray();
 }
+
+export const updateOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+  return await database.collection(collection).updateOne(filter, {$set: objectUpdated});
+}
