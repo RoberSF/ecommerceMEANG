@@ -6,3 +6,4 @@ Backend del proyecto de la tienda Online desarrollado con Node
 # Utilizamos MongoDB como base de datos que se relacionará con graphql
 # Modularización de resolvers y squemas
 # Modularización de código para refactorizar ante posibles cambios en las librerias
+# Slugify para generar el slug
