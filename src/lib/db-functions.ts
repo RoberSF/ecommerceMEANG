@@ -69,6 +69,15 @@ export const updateOne = async(database: Db, collection: string, filter:object =
   return await database.collection(collection).updateOne(filter, {$set: objectUpdated});
 }
 
+
+
+export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+  return await database.collection(collection).findOneAndUpdate(filter, objectUpdated );
+}
+
+
+
+
 export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
   return await database.collection(collection).findOneAndDelete(filter)
 }
