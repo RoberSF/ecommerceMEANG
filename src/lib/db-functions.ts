@@ -15,12 +15,14 @@ import { Db } from "mongodb";
             .collection(collection)
             .find()
             .limit(1)
-            .sort({ registerDate: -1 }) // Ordenamos de manera descente
+            .sort(sort) // Ordenamos de manera descente
             .toArray(); // Para obtener una lista
           if (lastElement.length === 0) {
-            return 1;
+            return '1';
           } else {
-            return lastElement[0].id + 1;
+
+            // El "+" hace que la operación sea en "número" y despues con String() lo pasamos a texto
+            return String(+lastElement[0].id + 1);
           } 
         } 
 

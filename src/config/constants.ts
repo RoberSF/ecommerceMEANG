@@ -11,6 +11,7 @@ export const SECRET_KEY =
 
 export enum COLLECTIONS {
   USERS = 'users',
+  GENRES = 'genres'
 }
 
 
