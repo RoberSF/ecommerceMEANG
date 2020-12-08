@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import bcrypt from 'bcrypt';
-import { asingDocumentId, findOneElement, inserOneElement, updateOne } from '../../lib/db-functions';
+import { asingDocumentId, deleteOne, findOneElement, inserOneElement, updateOne } from '../../lib/db-functions';
 
 
 
@@ -112,6 +112,43 @@ const resolversUserMutation: IResolvers = {
           }
       }
   },
+
+  async deleteUser(_, { id }, { db }){
+    
+    if (String(id) === '' || String(id) === undefined) {
+      return {
+          status: false,
+          message: `El ${id} de usuario no se ha especificado correctamente`,
+          user: null
+      }
+  };
+
+  try {
+      return await deleteOne(db,COLLECTIONS.USERS,{id: id})
+      .then(
+          result => {
+              // También hay result.n que nos dice el número de elementos que nos devolvió
+              if (result.ok === 1) {
+                  return {
+                      status: true,
+                      message: `El user con id: ${id} se borró correctamente`,
+                    };
+              }
+              return {
+                  status: false,
+                  message: `Error al borrar user. Inténtalo de nuevo por favor.`,
+                  user: null
+              }
+
+        })
+  } catch(error) {
+      return {
+          status: false,
+          message: `Error inesperado al borrar género. Inténtalo de nuevo por favor.`,
+          user: null
+      }
+  }
+  }
   },
 };
 
