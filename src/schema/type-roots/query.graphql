@@ -7,7 +7,7 @@ type Query {
   "Autenticarnos mediante token"
   me: ResultUser
   "Muestra el status, messages y generos del producto"
-  genres: ResultGenre
+  genres(page: Int = 1, itemsPage: Int = 20): ResultGenre
   "Muestra el género seleccionado"
   genre(id: ID!): ResultGenre
 }

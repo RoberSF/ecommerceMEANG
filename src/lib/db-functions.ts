@@ -1,4 +1,6 @@
 import { Db } from "mongodb";
+import { IPaginationOptions } from '../interfaces/pagination-options.interface';
+import { pagination } from "./pagination";
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -72,12 +74,27 @@ export const updateOne = async(database: Db, collection: string, filter:object =
 
 
 export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
-  return await database.collection(collection).findOneAndUpdate(filter, objectUpdated );
+  return await database.collection(collection).findOneAndUpdate(filter, objectUpdated);
 }
-
-
 
 
 export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
   return await database.collection(collection).findOneAndDelete(filter)
+}
+
+export const countlements = async(database: Db, collection: string,) => {
+  return await database.collection(collection).countDocuments();
+}
+
+// Función para la opción secundaria de paginación
+export const findElementsSub = async(database: Db, collection: string, filter:object = {},paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+
+  if ( paginationOptions.total === -1){
+    return await database.collection(collection).find(filter).toArray();
+  }
+  return await database.collection(collection).find(filter)
+            .skip(paginationOptions.skip)
+            .limit(paginationOptions.itemsPage)
+            .sort({id: -1}) // Ordenamos de manera descente
+            .toArray(); // Para obtener una lista
 }
