@@ -18,9 +18,9 @@ const resolversUsersQuery: IResolvers = {
 // {page, itemsPage}=> argumentos de la búsqueda
 // {db} => Información rollo token etc
 //**************************************************************************************** */
-    async users(_, {page, itemsPage}, { db }) { // Users corresponde al "type Query" de squema.graphql
+    async users(_, {page, itemsPerPage}, { db }) { // Users corresponde al "type Query" de squema.graphql
       try {
-        const paginationData = await pagination(db, COLLECTIONS.USERS, page, itemsPage);
+        const paginationData = await pagination(db, COLLECTIONS.USERS, page, itemsPerPage);
         return {
 /* ***************************************************************************************/
 // En el return iría un objeto con toda los datos que pido en la query(abajo). Ojo las llaves. 
