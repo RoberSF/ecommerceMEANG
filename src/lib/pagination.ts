@@ -1,5 +1,6 @@
 //**************************************************************************************************
-//    Sistema de paginación genérica. Posibilidad de usar le método de paginación de angular-avanzado                                                           
+//    Sistema de paginación genérica. Posibilidad de usar le método de paginación desarrollado en angular-avanzado      
+//        desde el que la paginación se hace desde front                                                     
 //**************************************************************************************************
 
 

@@ -10,7 +10,10 @@ import { pagination } from "./pagination";
  */   
       
       
-      // Comprobar el último usuario registrado para asignar ID
+    //**************************************************************************************************
+    //                 Comprobar el último usuario registrado para asignar ID                                                           
+    //**************************************************************************************************
+    
     export  const asingDocumentId = async (database: Db, collection: string, sort: object = {registerDate: -1}
         ) => {
             const lastElement = await database
@@ -46,6 +49,10 @@ import { pagination } from "./pagination";
 //   }
 
 
+//**************************************************************************************************
+//                      Encuentra un elemento de la calección de MongoDb                                                           
+//**************************************************************************************************
+
 export const findOneElement = async (database: Db, collection: string, filter: object) => {
     return database
     .collection(collection)
@@ -53,40 +60,38 @@ export const findOneElement = async (database: Db, collection: string, filter: o
 };
 
 
-// Con esta inserta uno elemento
+//**************************************************************************************************
+//                         Con esta inserta uno elemento                                                           
+//**************************************************************************************************
+
 export const inserOneElement = async (database: Db, collection: string, document:object) => {
       return await database.collection(collection).insertOne(document)
 };
 
-// Con esta inserta varios elementos/objetos
+
+
+//**************************************************************************************************
+//                        Inserta varios elementos/objetos                                                           
+//**************************************************************************************************
+
 export const inserManyElements = async (database: Db, collection: string, documents:Array<object>) => {
      return await database.collection(collection).insertMany(documents)
 };
+
+
+//**************************************************************************************************
+//                   Lista elementos de una colección                                                                
+//**************************************************************************************************
 
 export const findElements = async(database: Db, collection: string, filter:object = {}) => {
    return await database.collection(collection).find(filter).toArray();
 }
 
-export const updateOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
-  return await database.collection(collection).updateOne(filter, {$set: objectUpdated});
-}
 
+//**************************************************************************************************
+//                   Lista de elementos de una colección con paginación                                                          
+//**************************************************************************************************
 
-
-export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
-  return await database.collection(collection).findOneAndUpdate(filter, objectUpdated);
-}
-
-
-export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
-  return await database.collection(collection).findOneAndDelete(filter)
-}
-
-export const countlements = async(database: Db, collection: string,) => {
-  return await database.collection(collection).countDocuments();
-}
-
-// Función para la opción secundaria de paginación
 export const findElementsSub = async(database: Db, collection: string, filter:object = {},paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
   if ( paginationOptions.total === -1){
@@ -98,3 +103,41 @@ export const findElementsSub = async(database: Db, collection: string, filter:ob
             .sort({id: -1}) // Ordenamos de manera descente
             .toArray(); // Para obtener una lista
 }
+
+
+//**************************************************************************************************
+//                   Actuañizar elemento. Usado en genres                                                           
+//**************************************************************************************************
+
+export const updateOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+  return await database.collection(collection).updateOne(filter, {$set: objectUpdated});
+}
+
+
+//**************************************************************************************************
+//                Actualizar elemento. Usado en users                                                           
+//**************************************************************************************************
+
+export const updateFindOne = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+  return await database.collection(collection).findOneAndUpdate(filter, objectUpdated);
+}
+
+
+//**************************************************************************************************
+//                      Eliminar un elemento                                                           
+//**************************************************************************************************
+
+export const deleteOne = async(database: Db, collection: string, filter:object = {}) => {
+  return await database.collection(collection).findOneAndDelete(filter)
+}
+
+//**************************************************************************************************
+//                   Contar cuantos elementos hay en una colección                                                           
+//**************************************************************************************************
+
+export const countlements = async(database: Db, collection: string,) => {
+  return await database.collection(collection).countDocuments();
+}
+
+
+

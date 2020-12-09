@@ -25,7 +25,7 @@ Query:{
                         },
                 status: true,
                 message: 'Lista de géneros correctamente cargada',
-                // genres: await findElements(db, COLLECTIONS.GENRES)
+                // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
                 genres: await findElementsSub(db, COLLECTIONS.GENRES, {}, paginationData)
             }
         } catch (error) {

@@ -14,8 +14,8 @@ const resolversUsersQuery: IResolvers = {
   Query: {
 
 /* ***************************************************************************************/
-// _ => información que trae ka búsqueda
-// __ => argumentos de la búsqueda
+// _ => información que trae la búsqueda
+// {page, itemsPage}=> argumentos de la búsqueda
 // {db} => Información rollo token etc
 //**************************************************************************************** */
     async users(_, {page, itemsPage}, { db }) { // Users corresponde al "type Query" de squema.graphql
@@ -48,7 +48,7 @@ const resolversUsersQuery: IResolvers = {
                 },
           status: true,
           message: 'Lista de usuarios cargada correctamente',
-          // users: await findElements(db, COLLECTIONS.USERS)
+          // users: await findElements(db, COLLECTIONS.USERS) // Primer desarrollo del método para lista de users
           users: await findElementsSub(db, COLLECTIONS.USERS, {}, paginationData)
         };
       } catch (error) {
