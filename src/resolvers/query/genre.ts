@@ -16,7 +16,6 @@ Query:{
 
         try {
             const paginationData = await pagination(db, COLLECTIONS.GENRES, page, itemsPage);
-            console.log(paginationData);
             return {
                 info: {
                     page: paginationData.page, 

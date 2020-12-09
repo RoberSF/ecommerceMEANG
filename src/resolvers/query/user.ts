@@ -3,7 +3,8 @@ import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
-import { findOneElement, findElements } from '../../lib/db-functions';
+import { findOneElement, findElements, findElementsSub } from '../../lib/db-functions';
+import { pagination } from '../../lib/pagination';
 
 
 const resolversUsersQuery: IResolvers = {
@@ -17,8 +18,9 @@ const resolversUsersQuery: IResolvers = {
 // __ => argumentos de la búsqueda
 // {db} => Información rollo token etc
 //**************************************************************************************** */
-    async users(_, __, { db }) { // Users corresponde al "type Query" de squema.graphql
+    async users(_, {page, itemsPage}, { db }) { // Users corresponde al "type Query" de squema.graphql
       try {
+        const paginationData = await pagination(db, COLLECTIONS.USERS, page, itemsPage);
         return {
 /* ***************************************************************************************/
 // En el return iría un objeto con toda los datos que pido en la query(abajo). Ojo las llaves. 
@@ -38,12 +40,20 @@ const resolversUsersQuery: IResolvers = {
 // ]
 
 //**************************************************************************************** */
+          info: {
+            page: paginationData.page, 
+            pages:paginationData.pages, 
+            total: paginationData.total,
+            itemsPerPage: paginationData.itemsPage
+                },
           status: true,
           message: 'Lista de usuarios cargada correctamente',
-          users: await findElements(db, COLLECTIONS.USERS)
+          // users: await findElements(db, COLLECTIONS.USERS)
+          users: await findElementsSub(db, COLLECTIONS.USERS, {}, paginationData)
         };
       } catch (error) {
         return {
+          info:null,
           status: false,
           message:
             'Error al cargar los usuarios. Comprueba que tienes correctamente todo.',
