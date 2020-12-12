@@ -112,14 +112,12 @@ const resolversGenreMutation: IResolvers = {
                     if (result.result.nModified === 1) {
                         return {
                             status: true,
-                            message: `El género se actualizó correctamente`,
-                            // Object.assign es para mezclar ambos elementos
-                            genre: Object.assign({}, filterGenreObjectId, objectUpdate)
+                            message: `El género se bloqueó correctamente`,
                           };
                     }
                     return {
                         status: false,
-                        message: `Error inesperado al actualizar género. Inténtalo de nuevo por favor.`,
+                        message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
                         genre: null
                     }
  
@@ -127,15 +125,14 @@ const resolversGenreMutation: IResolvers = {
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al actualizar género. Inténtalo de nuevo por favor.`,
+                message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
                 genre: null
             }
         }
     },
 
 
-
-    async deleteGenre(_, { id }, { db }){
+    async deleteGenre(_, { id }, { db }) {
 
         if (String(id) === '' || String(id) === undefined) {
             return {
@@ -167,6 +164,52 @@ const resolversGenreMutation: IResolvers = {
             return {
                 status: false,
                 message: `Error inesperado al borrar género. Inténtalo de nuevo por favor.`,
+                genre: null
+            }
+        }
+    },
+
+    async blockGenre(_, { id }, { db }) {
+
+        // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
+        if (String(id) === '' || String(id) === undefined) {
+            return {
+                status: false,
+                message: `El ${id} de género no se ha especificado correctamente`,
+                genre: null
+            }
+        };
+
+        // En caso contrario que genere el document para insertarlo
+        const filterGenreObjectId = { id: id}
+        const objectUpdate = {
+            active: false
+        };
+
+        try {
+            return await updateOne(db,COLLECTIONS.GENRES,filterGenreObjectId, objectUpdate)
+            .then(
+                result => {
+                    // También hay result.n que nos dice el número de elementos que nos devolvió
+                    if (result.result.nModified === 1) {
+                        return {
+                            status: true,
+                            message: `El género se bloqueó correctamente`,
+                            // Object.assign es para mezclar ambos elementos
+                            genre: Object.assign({}, filterGenreObjectId, objectUpdate)
+                          };
+                    }
+                    return {
+                        status: false,
+                        message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
+                        genre: null
+                    }
+ 
+              })
+        } catch(error) {
+            return {
+                status: false,
+                message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
                 genre: null
             }
         }

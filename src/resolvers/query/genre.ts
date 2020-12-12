@@ -15,7 +15,7 @@ Query:{
    async genres(_, {page, itemsPage}, { db }) {
 
         try {
-            const paginationData = await pagination(db, COLLECTIONS.GENRES, page, itemsPage);
+            const paginationData = await pagination(db, COLLECTIONS.GENRES, page, itemsPage, {active: {$ne: false}});
             return {
                 info: {
                     page: paginationData.page, 

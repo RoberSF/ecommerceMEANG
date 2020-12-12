@@ -98,10 +98,12 @@ export const findElementsSub = async(database: Db, collection: string, filter:ob
     return await database.collection(collection).find(filter).toArray();
   }
   return await database.collection(collection).find(filter)
+            .filter({active: {$ne: false}}) // relacionado con los registros bloqueados
             .skip(paginationOptions.skip)
             .limit(paginationOptions.itemsPage)
             .sort({id: -1}) // Ordenamos de manera descente
-            .toArray(); // Para obtener una lista
+            .toArray();
+             // Para obtener una lista
 }
 
 
@@ -135,9 +137,14 @@ export const deleteOne = async(database: Db, collection: string, filter:object =
 //                   Contar cuantos elementos hay en una colección                                                           
 //**************************************************************************************************
 
-export const countlements = async(database: Db, collection: string,) => {
-  return await database.collection(collection).countDocuments();
+export const countlements = async(database: Db, collection: string, filter: object = {}) => {
+  return await database.collection(collection).countDocuments(filter);
 }
+
+//**************************************************************************************************
+//                        Bloquear elemento                                                           
+//**************************************************************************************************
+
 
 
 
