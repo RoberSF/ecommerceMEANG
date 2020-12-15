@@ -55,9 +55,7 @@ const resolversUserMutation: IResolvers = {
             user: null
           };
         });
-    },
-
-
+  },
 
     async updateUser(_, { user }, { db }) {
 
@@ -80,7 +78,8 @@ const resolversUserMutation: IResolvers = {
         lastname: user.lastname,
         email: user.email,
         birthday: user.birthday,
-        role: user.role
+        role: user.role,
+        id: user.id 
        };
 
       try {
@@ -148,7 +147,53 @@ const resolversUserMutation: IResolvers = {
           user: null
       }
   }
-  }
+  },
+
+  async blockUser(_, { id }, { db }) {
+
+    // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
+    if (String(id) === '' || String(id) === undefined) {
+        return {
+            status: false,
+            message: `El ${id} de género no se ha especificado correctamente`,
+            genre: null
+        }
+    };
+
+    // En caso contrario que genere el document para insertarlo
+    const filterUserObjectId = { id: id}
+    const objectUpdate = {
+        active: false
+    };
+
+    try {
+        return await updateOne(db,COLLECTIONS.USERS,filterUserObjectId, objectUpdate)
+        .then(
+            result => {
+                // También hay result.n que nos dice el número de elementos que nos devolvió
+                if (result.result.nModified === 1) {
+                    return {
+                        status: true,
+                        message: `El usuario se bloqueó correctamente`,
+                        // Object.assign es para mezclar ambos elementos
+                        genre: Object.assign({}, filterUserObjectId, objectUpdate)
+                      };
+                }
+                return {
+                    status: false,
+                    message: `Error inesperado al bloquear usuario. Inténtalo de nuevo por favor.`,
+                    genre: null
+                }
+
+          })
+    } catch(error) {
+        return {
+            status: false,
+            message: `Error inesperado al bloquear usuario. Inténtalo de nuevo por favor.`,
+            genre: null
+        }
+    }
+}
   },
 };
 
