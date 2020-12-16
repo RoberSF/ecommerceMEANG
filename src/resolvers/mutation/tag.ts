@@ -1,216 +1,213 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne } from '../../lib/db-functions';
-import GenresService from '../../services/genre.service';
 import slugify from 'slugify';
 
 
-const resolversGenreMutation: IResolvers = {
+const resolversTagMutation: IResolvers = {
 
 // Tipo raíz "Mutation"
   Mutation: {
     
     // genre = name
-    async addGenre(_, { genre }, { db }) {
+    async addTag(_, { tag }, { db }) {
 
-
-        // En caso de querer usar el servicio
-        // new GenresService().helloService();
 
         // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
-        if (genre === '' || genre === undefined) {
+        if (tag === '' || tag === undefined) {
             return {
                 status: false,
                 message: `El género no se ha especificado correctamente`,
-                genre: null
+                tag: null
             }
         };
 
         // Comprobar que no existe
-        if (genre){
-            const genreCheck = await findOneElement(db,COLLECTIONS.GENRES,{name: genre})
+        if (tag){
+            const tagCheck = await findOneElement(db,COLLECTIONS.TAGS,{name: tag})
             
-            if (genreCheck !== null) {
+            if (tagCheck !== null) {
                 return {
                   status: false,
-                  message: `El género ${genre} está registrado y no puedes registrarlo`,
-                  user: null
+                  message: `El tag ${tag} está registrado y no puedes registrarlo`,
+                  tag: null
                 };
               }
         } 
     
 
-        // En caso contrario que genere el document para insertarlo
-        const genreObject = {
-            id: await asingDocumentId(db, COLLECTIONS.GENRES, { id: -1}),
-            name: genre,
-            slug: slugify(genre || '', { lower: true })
+        // En caso contrario que tag el document para insertarlo
+        const tagObject = {
+            id: await asingDocumentId(db, COLLECTIONS.TAGS, { id: -1}),
+            name: tag,
+            slug: slugify(tag || '', { lower: true }),
+            active: true
         };
 
 
         try {
-            return await inserOneElement(db,COLLECTIONS.GENRES,genreObject)
+            return await inserOneElement(db,COLLECTIONS.TAGS,tagObject)
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
                     if (result.result.ok === 1) {
                         return {
                             status: true,
-                            message: `El género se registró correctamente`,
-                            genre: genreObject
+                            message: `El tag se registró correctamente`,
+                            tag: tagObject
                           };
                     }
                     return {
                         status: false,
-                        message: `Error inesperado al insertar género. Inténtalo de nuevo por favor.`,
-                        genre: null
+                        message: `Error inesperado al insertar tag. Inténtalo de nuevo por favor.`,
+                        tag: null
                     }
  
               })
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al insertar género. Inténtalo de nuevo por favor.`,
-                genre: null
+                message: `Error inesperado al insertar tag. Inténtalo de nuevo por favor.`,
+                tag: null
             }
         }
     },
 
-    // genre = id y name
-    async updateGenre(_, { id,genre }, { db }) {
+    // tag = id y name
+    async updateTag(_, { id,tag }, { db }) {
 
         // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
         if (String(id) === '' || String(id) === undefined) {
             return {
                 status: false,
-                message: `El ${id} de género no se ha especificado correctamente`,
-                genre: null
+                message: `El ${id} de tag no se ha especificado correctamente`,
+                tag: null
             }
         };
         // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
-        if (genre === '' || genre === undefined) {
+        if (tag === '' || tag === undefined) {
             return {
                 status: false,
                 message: `El nombre no se ha especificado correctamente`,
-                genre: null
+                tag: null
             }
         };
 
     
         // En caso contrario que genere el document para insertarlo
-        const filterGenreObjectId = { id: id}
+        const filterTagObjectId = { id: id}
         const objectUpdate = {
-            name: genre,
-            slug: slugify(genre || '', { lower: true })
+            name: tag,
+            slug: slugify(tag || '', { lower: true })
         };
 
         try {
-            return await updateOne(db,COLLECTIONS.GENRES,filterGenreObjectId, objectUpdate)
+            return await updateOne(db,COLLECTIONS.TAGS,filterTagObjectId, objectUpdate)
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
                     if (result.result.nModified === 1) {
                         return {
                             status: true,
-                            message: `El género se actualizó correctamente`,
+                            message: `El tag se actualizó correctamente`,
                           };
                     }
                     return {
                         status: false,
-                        message: `Error inesperado al actualizar género. Inténtalo de nuevo por favor.`,
-                        genre: null
+                        message: `Error inesperado al actualizar tag. Inténtalo de nuevo por favor.`,
+                        tag: null
                     }
  
               })
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
-                genre: null
+                message: `Error inesperado al bloquear tag. Inténtalo de nuevo por favor.`,
+                tag: null
             }
         }
     },
 
 
-    async deleteGenre(_, { id }, { db }) {
+    async deleteTag(_, { id }, { db }) {
 
         if (String(id) === '' || String(id) === undefined) {
             return {
                 status: false,
-                message: `El ${id} de género no se ha especificado correctamente`,
-                genre: null
+                message: `El ${id} de tag no se ha especificado correctamente`,
+                tag: null
             }
         };
 
         try {
-            return await deleteOne(db,COLLECTIONS.GENRES,{id: id})
+            return await deleteOne(db,COLLECTIONS.TAGS,{id: id})
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
                     if (result.ok === 1) {
                         return {
                             status: true,
-                            message: `El género con id: ${id} se borró correctamente`,
+                            message: `El tag con id: ${id} se borró correctamente`,
                           };
                     }
                     return {
                         status: false,
                         message: `Error al borrar género. Inténtalo de nuevo por favor.`,
-                        genre: null
+                        tag: null
                     }
  
               })
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al borrar género. Inténtalo de nuevo por favor.`,
-                genre: null
+                message: `Error inesperado al borrar tag. Inténtalo de nuevo por favor.`,
+                tag: null
             }
         }
     },
 
-    async blockGenre(_, { id }, { db }) {
+    async blockTag(_, { id }, { db }) {
 
         // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
         if (String(id) === '' || String(id) === undefined) {
             return {
                 status: false,
-                message: `El ${id} de género no se ha especificado correctamente`,
-                genre: null
+                message: `El ${id} de tag no se ha especificado correctamente`,
+                tag: null
             }
         };
 
         // En caso contrario que genere el document para insertarlo
-        const filterGenreObjectId = { id: id}
+        const filterTagObjectId = { id: id}
         const objectUpdate = {
             active: false
         };
 
         try {
-            return await updateOne(db,COLLECTIONS.GENRES,filterGenreObjectId, objectUpdate)
+            return await updateOne(db,COLLECTIONS.TAGS,filterTagObjectId, objectUpdate)
             .then(
                 result => {
                     // También hay result.n que nos dice el número de elementos que nos devolvió
                     if (result.result.nModified === 1) {
                         return {
                             status: true,
-                            message: `El género se bloqueó correctamente`,
+                            message: `El tag se bloqueó correctamente`,
                             // Object.assign es para mezclar ambos elementos
-                            genre: Object.assign({}, filterGenreObjectId, objectUpdate)
+                            tag: Object.assign({}, filterTagObjectId, objectUpdate)
                           };
                     }
                     return {
                         status: false,
-                        message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
-                        genre: null
+                        message: `Error inesperado al bloquear tag. Inténtalo de nuevo por favor.`,
+                        tag: null
                     }
  
               })
         } catch(error) {
             return {
                 status: false,
-                message: `Error inesperado al bloquear género. Inténtalo de nuevo por favor.`,
-                genre: null
+                message: `Error inesperado al bloquear tag. Inténtalo de nuevo por favor.`,
+                tag: null
             }
         }
     }
@@ -220,4 +217,4 @@ const resolversGenreMutation: IResolvers = {
 
 
 
-export default resolversGenreMutation;
+export default resolversTagMutation

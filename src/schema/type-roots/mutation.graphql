@@ -5,7 +5,11 @@ type Mutation {
   deleteUser(id: ID!): ResultUser,
   blockUser(id: ID!):ResultUser,
   addGenre(genre: String!): ResultGenre,
-  updateGenre(id: ID!,genre: String!): ResultGenre,
+  updateGenre(id: ID!, genre: String!): ResultGenre,
   deleteGenre(id: ID!): ResultGenre,
-  blockGenre(id: ID!):ResultGenre
+  blockGenre(id: ID!):ResultGenre,
+  addTag(tag: String!): ResultTag,
+  updateTag(id: ID!,tag: String!): ResultTag,
+  deleteTag(id: ID!): ResultTag,
+  blockTag(id: ID!,unblock: Boolean = false): ResultTag
 }
