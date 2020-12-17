@@ -7,3 +7,4 @@ Backend del proyecto de la tienda Online desarrollado con Node
 # Modularización de resolvers y squemas
 # Modularización de código para refactorizar ante posibles cambios en las librerias
 # Slugify para generar el slug
+# Nodemailer envío automático de correos electrónicos
