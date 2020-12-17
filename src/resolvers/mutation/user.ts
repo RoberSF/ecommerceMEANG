@@ -193,6 +193,52 @@ const resolversUserMutation: IResolvers = {
             genre: null
         }
     }
+},
+
+async unBlockUser(_, { id }, { db }) {
+
+  // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
+  if (String(id) === '' || String(id) === undefined) {
+      return {
+          status: false,
+          message: `El ${id} de user no se ha especificado correctamente`,
+          genre: null
+      }
+  };
+
+  // En caso contrario que genere el document para insertarlo
+  const filterUserObjectId = { id: id}
+  const objectUpdate = {
+      active: true
+  };
+
+  try {
+      return await updateOne(db,COLLECTIONS.USERS,filterUserObjectId, objectUpdate)
+      .then(
+          result => {
+              // También hay result.n que nos dice el número de elementos que nos devolvió
+              if (result.result.nModified === 1) {
+                  return {
+                      status: true,
+                      message: `El usuario desbloqueado correctamente`,
+                      // Object.assign es para mezclar ambos elementos
+                      user: Object.assign({}, filterUserObjectId, objectUpdate)
+                    };
+              }
+              return {
+                  status: false,
+                  message: `Error inesperado al desbloquear usuario. Inténtalo de nuevo por favor.`,
+                  user: null
+              }
+
+        })
+  } catch(error) {
+      return {
+          status: false,
+          message: `Error inesperado al desbloquear usuario. Inténtalo de nuevo por favor.`,
+          user: null
+      }
+  }
 }
   },
 };
