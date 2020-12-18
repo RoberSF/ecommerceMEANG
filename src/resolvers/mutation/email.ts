@@ -38,6 +38,7 @@ const resolversMailMutation: IResolvers = {
         to: email, // list of receivers
         html
       }
+      console.log(token);
     // Enviamos el mail al servicio y que allí reutilice el envíar email
      return new MailService().send(mail)
     },

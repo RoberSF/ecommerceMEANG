@@ -1,6 +1,7 @@
 import { Db } from "mongodb";
 import { IPaginationOptions } from '../interfaces/pagination-options.interface';
 import { pagination } from "./pagination";
+import { ACTIVE_VALUES_FILTER } from '../config/constants';
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -92,13 +93,24 @@ export const findElements = async(database: Db, collection: string, filter:objec
 //                   Lista de elementos de una colección con paginación                                                          
 //**************************************************************************************************
 
-export const findElementsSub = async(database: Db, collection: string, filter:object = {},paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+export const findElementsSub = async(database: Db, collection: string, active:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+
+let filter = {};
+let filtered: object = {active: {$ne: false}};
 
   if ( paginationOptions.total === -1){
     return await database.collection(collection).find(filter).toArray();
   }
+
+  
+  if(active === ACTIVE_VALUES_FILTER.ALL){
+    filtered = {}
+  } else if(active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+    filtered = {active: {$eq: false}}
+  }
+
   return await database.collection(collection).find(filter)
-            .filter({active: {$ne: false}}) // relacionado con los registros bloqueados
+            .filter(filtered) // relacionado con los registros bloqueados
             .skip(paginationOptions.skip)
             .limit(paginationOptions.itemsPage)
             .sort({id: -1}) // Ordenamos de manera descente

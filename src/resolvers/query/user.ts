@@ -3,7 +3,7 @@ import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
 import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
-import { findOneElement, findElements, findElementsSub } from '../../lib/db-functions';
+import { findOneElement,findElementsSub } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
 
 
@@ -18,7 +18,8 @@ const resolversUsersQuery: IResolvers = {
 // {page, itemsPage}=> argumentos de la búsqueda
 // {db} => Información rollo token etc
 //**************************************************************************************** */
-    async users(_, {page, itemsPerPage}, { db }) { // Users corresponde al "type Query" de squema.graphql
+
+    async users(_, {page, itemsPerPage, active}, { db }) { // Users corresponde al "type Query" de squema.graphql
       try {
         const paginationData = await pagination(db, COLLECTIONS.USERS, page, itemsPerPage);
         return {
@@ -40,6 +41,7 @@ const resolversUsersQuery: IResolvers = {
 // ]
 
 //**************************************************************************************** */
+  
           info: {
             page: paginationData.page, 
             pages:paginationData.pages, 
@@ -49,7 +51,7 @@ const resolversUsersQuery: IResolvers = {
           status: true,
           message: 'Lista de usuarios cargada correctamente',
           // users: await findElements(db, COLLECTIONS.USERS) // Primer desarrollo del método para lista de users
-          users: await findElementsSub(db, COLLECTIONS.USERS, {}, paginationData)
+          users: await findElementsSub(db, COLLECTIONS.USERS, active, paginationData)
         };
       } catch (error) {
         return {
