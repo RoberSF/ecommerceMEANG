@@ -12,10 +12,11 @@ Query:{
 //   Método para listar elemtos solamente                                                           
 //**************************************************************************************************
 
-   async genres(_, {page, itemsPage}, { db }) {
+   async genres(_, {page, itemsPerPage, active}, { db }) {
+
 
         try {
-            const paginationData = await pagination(db, COLLECTIONS.GENRES, page, itemsPage, {active: {$ne: false}});
+            const paginationData = await pagination(db, COLLECTIONS.GENRES, page, itemsPerPage);
             return {
                 info: {
                     page: paginationData.page, 
@@ -26,7 +27,7 @@ Query:{
                 status: true,
                 message: 'Lista de géneros correctamente cargada',
                 // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-                genres: await findElementsSub(db, COLLECTIONS.GENRES, {}, paginationData)
+                genres: await findElementsSub(db, COLLECTIONS.GENRES, {active: active}, paginationData)
             }
         } catch (error) {
             return {
