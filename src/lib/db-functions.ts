@@ -93,24 +93,40 @@ export const findElements = async(database: Db, collection: string, filter:objec
 //                   Lista de elementos de una colección con paginación                                                          
 //**************************************************************************************************
 
-export const findElementsSub = async(database: Db, collection: string, active:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+export const findElementsSub = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+
+
 
 let filter = {};
-let filtered: object = {active: {$ne: false}};
+let filteredActive: object = {active: {$ne: false}};
+let platform_id = args.platform_id;
+let filterTogether = filteredActive
+
 
   if ( paginationOptions.total === -1){
     return await database.collection(collection).find(filter).toArray();
   }
-
   
-  if(active === ACTIVE_VALUES_FILTER.ALL){
-    filtered = {}
-  } else if(active === ACTIVE_VALUES_FILTER.INACTIVE ) {
-    filtered = {active: {$eq: false}}
+  
+  if(args.active === ACTIVE_VALUES_FILTER.ALL){
+    filteredActive = {}
+  } else if(args.active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+    filteredActive = {active: {$eq: false}}
+  }
+  
+  if (platform_id !== '' && platform_id !== undefined){
+
+    filterTogether = {...filteredActive, ...{platform_id}}
   }
 
+  if (platform_id == '' || platform_id == undefined){
+
+    filterTogether = {...filteredActive}
+  }
+
+
   return await database.collection(collection).find(filter)
-            .filter(filtered) // relacionado con los registros bloqueados
+            .filter(filterTogether) // relacionado con los registros bloqueados
             .skip(paginationOptions.skip)
             .limit(paginationOptions.itemsPage)
             .sort({id: -1}) // Ordenamos de manera descente
@@ -154,9 +170,188 @@ export const countlements = async(database: Db, collection: string, filter: obje
 }
 
 //**************************************************************************************************
-//                        Bloquear elemento                                                           
+//                        $match y $sample MongoDB   
+//                        Filtro por plataformas                                                         
 //**************************************************************************************************
 
 
 
+export const findElementsSubRandom = async(database: Db, collection: string, args:any, paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
+
+  //console.log('args',args);
+  let filter = {};
+  let filteredActive: object = {active: {$ne: false}};
+  let platform_id = args[1].platform_id;
+  let filterTogether = filteredActive
+  
+  
+    if ( paginationOptions.total === -1){
+      return await database.collection(collection).find(filter).toArray();
+    }
+    
+    
+    if(args[0].active === ACTIVE_VALUES_FILTER.ALL){
+      filteredActive = {}
+    } else if(args[0].active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+      filteredActive = {active: {$eq: false}}
+    }
+    
+    if (platform_id !== '' && platform_id !== undefined){
+  
+      filterTogether = {...filteredActive, ...{platform_id}}
+      
+    }
+  
+    if (platform_id == '' || platform_id == undefined){
+  
+      filterTogether = {...filteredActive}
+    }
+  
+    if ( args[2].random == undefined || args[2].random == null || !args[2].random) {
+
+      return await database.collection(collection).find(filter)
+      .filter(filterTogether) // relacionado con los registros bloqueados
+      .skip(paginationOptions.skip)
+      .limit(paginationOptions.itemsPage)
+      .sort({id: -1}) // Ordenamos de manera descente
+      .toArray();
+       // Para obtener una lista
+    } else {
+
+
+      const pipeline = [ 
+        {$match: filterTogether}, // le mandaría todas las querys/filtros juntas
+        {$sample: {size: paginationOptions.itemsPage}} //l eidgo el número de items random que quiero
+      ];
+      console.log(pipeline);
+        //**************************************************************************************************
+        //  Consulta Database con $match y $sample. Tiene que ser una lista de objetos el agregate                                                          
+        //**************************************************************************************************
+        
+        return await database.collection(collection).aggregate(pipeline)
+            .skip(paginationOptions.skip)
+            .limit(paginationOptions.itemsPage)
+            .sort({id: -1})
+            .toArray()
+    }
+
+
+  }
+
+
+
+
+//**************************************************************************************************
+//                            Filtrado por ofertas y número de stock
+//  De X precio para abajo, de Stock para abajo y ordenados de menos a más por precio                                                           
+//**************************************************************************************************
+
+  export const findElementsOfferStock = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+
+    console.log('args', args[0], args[1], args[2], args[3]);
+    let filter = {}
+    let filteredActive: object = {$ne: false};
+    let sortBy = 1;
+
+    let otherFilters:object = {};
+
+
+      if ( paginationOptions.total === -1){
+        return await database.collection(collection).find(filter).toArray();
+      }
+      
+      
+      if(args[0].active === ACTIVE_VALUES_FILTER.ALL){
+        // filter.push(filter[0].active = {})
+        filteredActive = {$ne: false}
+      } else if(args[0].active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+        // filter.push({active: {$eq: false}}) 
+        filteredActive = {$eq: false}
+      }
+
+      if(args[3].lastUnits > 0 && args[2].topPrice > 10 ) {
+        otherFilters = {
+            $and: [
+                {active: filteredActive},
+                {price: {$lte: args[2].topPrice}},
+                {stock: {$lte: args[3].lastUnits}}
+            ]
+        }
+    } else if( args[3].lastUnits <= 0 && args[2].topPrice > 10 ) {
+
+        otherFilters = {price: {$lte: args[2].topPrice}}
+
+        } else if( args[3].lastUnits > 0 && args[2].topPrice <= 10 ) {
+
+            otherFilters = {stock: {$lte: args[3].lastUnits}}
+    
+            }
+
+      let pipeline = [ 
+        {$match: otherFilters}, // le mandaría todas las querys/filtros juntas
+        {$sample: {size: paginationOptions.itemsPage}} //l eidgo el número de items random que quiero
+      ];
+
+      console.log(pipeline);
+      console.log(otherFilters);
+
+      if ( args[2].random == undefined || args[2].random == null || !args[2].random || args[2].random == false ) {
+
+      pipeline = [ 
+          {$match: otherFilters} // le mandaría todas las querys/filtros juntas
+        ];
+    
+      return await database.collection(collection).aggregate(pipeline)
+        .skip(paginationOptions.skip)
+        .limit(paginationOptions.itemsPage)
+        .sort({price: sortBy})
+        .toArray()
+      } else {
+
+      return await database.collection(collection).aggregate(pipeline)
+        .skip(paginationOptions.skip)
+        .limit(paginationOptions.itemsPage)
+        .sort({price: sortBy})
+        .toArray()
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Ejemplo de promise
+// export const  randomItems = async(database: Db,collection: string,filter:any,paginationOptions:IPaginationOptions
+// ): Promise<Array<Object>> => {
+//   return new Promise(async(resolve) => {
+//     // console.log(filter);
+//     const active = filter[0].active;
+//     let actived = {active}
+//     const platform = filter[1].platform_id;
+//     let platformed = {platform}
+//     const filtered = {...{active}, ...{platform}}
+//     const pipeline = [ 
+//       {$match: filtered}, // le mandaría todas las querys juntas
+//       {$sample: {size: 4}}
+//     ];
+
+//     resolve(
+    
+      
+//     await database.collection(collection).aggregate(pipeline)
+//     .skip(paginationOptions.skip)
+//     .limit(paginationOptions.itemsPage)
+//     .sort({id: -1})
+//     .toArray()
+//     );
+//   });
+// };
