@@ -213,9 +213,56 @@ const resolversGenreMutation: IResolvers = {
                 genre: null
             }
         }
-    }
+    },
+
+    async unBlockGenre(_, { id }, { db }) {
+
+        // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
+        if (String(id) === '' || String(id) === undefined) {
+            return {
+                status: false,
+                message: `El ${id} de genre no se ha especificado correctamente`,
+                genre: null
+            }
+        };
+      
+        // En caso contrario que genere el document para insertarlo
+        const filterUserObjectId = { id: id}
+        const objectUpdate = {
+            active: true
+        };
+      
+        try {
+            return await updateOne(db,COLLECTIONS.GENRES,filterUserObjectId, objectUpdate)
+            .then(
+                result => {
+                    // También hay result.n que nos dice el número de elementos que nos devolvió
+                    if (result.result.nModified === 1) {
+                        return {
+                            status: true,
+                            message: `El género desbloqueado correctamente`,
+                            // Object.assign es para mezclar ambos elementos
+                            genre: Object.assign({}, filterUserObjectId, objectUpdate)
+                          };
+                    }
+                    return {
+                        status: false,
+                        message: `Error inesperado al desbloquear género. Inténtalo de nuevo por favor.`,
+                        genre: null
+                    }
+      
+              })
+        } catch(error) {
+            return {
+                status: false,
+                message: `Error inesperado al desbloquear género. Inténtalo de nuevo por favor.`,
+                genre: null
+            }
+        }
     }
   }
+
+}
 
 
 
