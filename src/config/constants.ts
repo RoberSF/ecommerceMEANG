@@ -12,7 +12,10 @@ export const SECRET_KEY =
 export enum COLLECTIONS {
   USERS = 'users',
   GENRES = 'genres',
-  TAGS = 'tags'
+  TAGS = 'tags',
+  PRODUCTS= 'products_platforms',
+  PRODUCTS_ITEMS = 'products',
+  PLATFORMS = 'platforms'
 }
 
 
