@@ -11,10 +11,10 @@ const resolversTagQuery: IResolvers = {
 //   Método para listar elemtos solamente                                                           
 //**************************************************************************************************
 
-   async tags(_, {page, itemsPage}, { db }) {
+   async tags(_, {page, itemsPerPage, active}, { db }) {
 
     try {
-        const paginationData = await pagination(db, COLLECTIONS.TAGS, page, itemsPage, {active: {$ne: true}});
+        const paginationData = await pagination(db, COLLECTIONS.TAGS, page, itemsPerPage);
         return {
             info: {
                 page: paginationData.page, 
@@ -25,7 +25,7 @@ const resolversTagQuery: IResolvers = {
             status: true,
             message: 'Lista de tags correctamente cargada',
             // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-            tags: await findElementsSub(db, COLLECTIONS.TAGS, {}, paginationData)
+            tags: await findElementsSub(db, COLLECTIONS.TAGS, active, paginationData)
         }
     } catch (error) {
         return {

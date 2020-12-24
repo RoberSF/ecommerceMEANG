@@ -210,6 +210,52 @@ const resolversTagMutation: IResolvers = {
                 tag: null
             }
         }
+    },
+
+    async unBlockTag(_, { id }, { db }) {
+
+        // Comprobar que no está en blanco ni es indefinido. Podríamos refactorizar para hacerlo común en un servicio
+        if (String(id) === '' || String(id) === undefined) {
+            return {
+                status: false,
+                message: `El ${id} de tag no se ha especificado correctamente`,
+                tag: null
+            }
+        };
+      
+        // En caso contrario que genere el document para insertarlo
+        const filterUserObjectId = { id: id}
+        const objectUpdate = {
+            active: true
+        };
+      
+        try {
+            return await updateOne(db,COLLECTIONS.TAGS,filterUserObjectId, objectUpdate)
+            .then(
+                result => {
+                    // También hay result.n que nos dice el número de elementos que nos devolvió
+                    if (result.result.nModified === 1) {
+                        return {
+                            status: true,
+                            message: `El tag desbloqueado correctamente`,
+                            // Object.assign es para mezclar ambos elementos
+                            tag: Object.assign({}, filterUserObjectId, objectUpdate)
+                          };
+                    }
+                    return {
+                        status: false,
+                        message: `Error inesperado al desbloquear tag. Inténtalo de nuevo por favor.`,
+                        tag: null
+                    }
+      
+              })
+        } catch(error) {
+            return {
+                status: false,
+                message: `Error inesperado al desbloquear tag. Inténtalo de nuevo por favor.`,
+                tag: null
+            }
+        }
     }
     }
   }
