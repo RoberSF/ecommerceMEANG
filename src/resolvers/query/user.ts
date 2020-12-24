@@ -51,7 +51,7 @@ const resolversUsersQuery: IResolvers = {
           status: true,
           message: 'Lista de usuarios cargada correctamente',
           // users: await findElements(db, COLLECTIONS.USERS) // Primer desarrollo del método para lista de users
-          users: await findElementsSub(db, COLLECTIONS.USERS, active, paginationData)
+          users: await findElementsSub(db, COLLECTIONS.USERS, {active:active}, paginationData)
         };
       } catch (error) {
         return {
