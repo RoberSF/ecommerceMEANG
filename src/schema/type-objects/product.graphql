@@ -1,0 +1,11 @@
+type Product {
+    id: ID!
+    productId: ID!
+    product: ProductItem!
+    platformId: ID!
+    platform: Platform!
+    active: Boolean!
+    price: Float!
+    stock: Int!
+}
+
