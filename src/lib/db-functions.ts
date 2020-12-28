@@ -179,7 +179,7 @@ export const countlements = async(database: Db, collection: string, filter: obje
 export const findElementsSubRandom = async(database: Db, collection: string, args:any, paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
 
-  //console.log('args',args);
+  // console.log('args',args);
   let filter = {};
   let filteredActive: object = {active: {$ne: false}};
   let platform_id = args[1].platform_id;
@@ -224,7 +224,7 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
         {$match: filterTogether}, // le mandaría todas las querys/filtros juntas
         {$sample: {size: paginationOptions.itemsPage}} //l eidgo el número de items random que quiero
       ];
-      console.log(pipeline);
+      // console.log(pipeline);
         //**************************************************************************************************
         //  Consulta Database con $match y $sample. Tiene que ser una lista de objetos el agregate                                                          
         //**************************************************************************************************
@@ -249,7 +249,7 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
 
   export const findElementsOfferStock = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
-    console.log('args', args[0], args[1], args[2], args[3]);
+    // console.log('args', args[0], args[1], args[2], args[3],  args[4]);
     let filter = {}
     let filteredActive: object = {$ne: false};
     let sortBy = 1;
@@ -293,22 +293,22 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
         {$sample: {size: paginationOptions.itemsPage}} //l eidgo el número de items random que quiero
       ];
 
-      console.log(pipeline);
-      console.log(otherFilters);
+      // console.log(pipeline);
+      // console.log(otherFilters);
 
-      if ( args[2].random == undefined || args[2].random == null || !args[2].random || args[2].random == false ) {
+      if ( args[1].random == undefined || args[1].random == null || !args[1].random ) {
 
       pipeline = [ 
           {$match: otherFilters} // le mandaría todas las querys/filtros juntas
         ];
-    
+      // console.log('Random false');
       return await database.collection(collection).aggregate(pipeline)
         .skip(paginationOptions.skip)
         .limit(paginationOptions.itemsPage)
         .sort({price: sortBy})
         .toArray()
       } else {
-
+      // console.log('random true');
       return await database.collection(collection).aggregate(pipeline)
         .skip(paginationOptions.skip)
         .limit(paginationOptions.itemsPage)
