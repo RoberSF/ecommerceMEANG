@@ -68,7 +68,7 @@ const resolversProductsQuery: IResolvers = {
             status: true,
             message: 'Lista de plataformas correctamente cargada',
             // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-            products: await findElementsSubRandom(db, COLLECTIONS.PRODUCTS, [{active: active}, {platform_id: platform}, {random: random}], paginationData)
+            products: await findElementsSubRandom(db, COLLECTIONS.PRODUCTS, [{active: active}, {platform_id: platform}, {random: random}, {itemsPerPage: itemsPerPage}], paginationData)
         }
     } catch (error) {
         return {
@@ -80,7 +80,7 @@ const resolversProductsQuery: IResolvers = {
 
    async productsOffersLast(_, { page, itemsPerPage, active, random, topPrice, lastUnits }, { db }) {
 
-   
+//    console.log('front', page, itemsPerPage, active, random, topPrice, lastUnits);
 
     try {
         const paginationData = await pagination(db, COLLECTIONS.PRODUCTS, page, itemsPerPage);
@@ -94,7 +94,7 @@ const resolversProductsQuery: IResolvers = {
             status: true,
             message: 'Lista de plataformas correctamente cargada',
             // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-            products: await findElementsOfferStock(db, COLLECTIONS.PRODUCTS, [{active: active}, {random: random}, {topPrice: topPrice}, {lastUnits: lastUnits}], paginationData)
+            products: await findElementsOfferStock(db, COLLECTIONS.PRODUCTS, [{active: active}, {random: random}, {topPrice: topPrice}, {lastUnits: lastUnits}, { itemsPerPage: itemsPerPage}], paginationData)
         }
     } catch (error) {
         return {
