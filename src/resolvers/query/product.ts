@@ -32,6 +32,9 @@ const resolversProductsQuery: IResolvers = {
    },
 
    async productsPlatforms(_, { page, itemsPerPage, active, platform}, { db }) {
+
+    // ** platform ahora tendría que se run array de strings
+    // console.log(platform);
     try {
         const paginationData = await pagination(db, COLLECTIONS.PRODUCTS, page, itemsPerPage);
         return {
@@ -55,7 +58,6 @@ const resolversProductsQuery: IResolvers = {
    },
 
    async productsPlatformsRandom(_, { page, itemsPerPage, active, platform, random}, { db }) {
-
     try {
         const paginationData = await pagination(db, COLLECTIONS.PRODUCTS, page, itemsPerPage);
         return {

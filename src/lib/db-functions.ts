@@ -99,7 +99,8 @@ export const findElementsSub = async(database: Db, collection: string, args:any,
 
 let filter = {};
 let filteredActive: object = {active: {$ne: false}};
-let platform_id = args.platform_id;
+// let platform_id = args.platform_id;
+let platform_id: Array<string> = args.platform_id;
 let filterTogether = filteredActive
 
 
@@ -114,12 +115,14 @@ let filterTogether = filteredActive
     filteredActive = {active: {$eq: false}}
   }
   
-  if (platform_id !== '' && platform_id !== undefined){
+  // if (platform_id !== '' && platform_id !== undefined){
+  if (platform_id.length > 0 && platform_id !== undefined){
 
-    filterTogether = {...filteredActive, ...{platform_id}}
+    // filterTogether = {...filteredActive, ...{platform_id}} // { active: { '$ne': false }, platform_id: [ '4', '18' ] }
+    filterTogether = {...filteredActive, ...{platform_id: {$in: platform_id}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
   }
 
-  if (platform_id == '' || platform_id == undefined){
+  if (platform_id.length <= 0 || platform_id == undefined){
 
     filterTogether = {...filteredActive}
   }
@@ -182,8 +185,10 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
   // console.log('args',args);
   let filter = {};
   let filteredActive: object = {active: {$ne: false}};
-  let platform_id = args[1].platform_id;
+  // let platform_id = args[1].platform_id;
+  let platform_id: Array<string> = args[1].platform_id;
   let filterTogether = filteredActive
+
   
   
     if ( paginationOptions.total === -1){
@@ -197,18 +202,22 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
       filteredActive = {active: {$eq: false}}
     }
     
-    if (platform_id !== '' && platform_id !== undefined){
+    // if (platform_id !== '' && platform_id !== undefined){
+    if (platform_id.length > 0 && platform_id !== undefined){
   
-      filterTogether = {...filteredActive, ...{platform_id}}
+      // filterTogether = {...filteredActive, ...{platform_id}}
+      filterTogether = {...filteredActive, ...{platform_id: {$in: platform_id}}   }
       
     }
   
-    if (platform_id == '' || platform_id == undefined){
+    // if (platform_id == '' || platform_id == undefined){
+    if (platform_id.length <= 0 || platform_id == undefined){
   
       filterTogether = {...filteredActive}
     }
   
     if ( args[2].random == undefined || args[2].random == null || !args[2].random) {
+      
 
       return await database.collection(collection).find(filter)
       .filter(filterTogether) // relacionado con los registros bloqueados
@@ -228,7 +237,6 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
         //**************************************************************************************************
         //  Consulta Database con $match y $sample. Tiene que ser una lista de objetos el agregate                                                          
         //**************************************************************************************************
-        
         return await database.collection(collection).aggregate(pipeline)
             .skip(paginationOptions.skip)
             .limit(paginationOptions.itemsPage)

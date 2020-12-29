@@ -16,8 +16,8 @@ type Query {
         itemsPerPage: Int = 20,
         "Especificar el estado del product que queremos mostrar"
         active: ActiveFilterEnum = ACTIVE,
-        "Especificar el de la platforma seleccionada"
-        platform: ID!): ResultProduct
+        "Especificar las platformas seleccionadas"
+        platform: [ID!]!): ResultProduct
 
     productsPlatformsRandom (
         "Página seleccionada para acceder a ella"
@@ -27,7 +27,7 @@ type Query {
         "Especificar el estado del product que queremos mostrar"
         active: ActiveFilterEnum = ACTIVE,
         "Especificar el de la platforma seleccionada"
-        platform: ID,
+        platform: [ID!]!,
         "Especificamos si queremos un número aleatorio de items"
         random: Boolean = false): ResultProduct
 
