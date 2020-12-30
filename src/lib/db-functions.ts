@@ -55,9 +55,7 @@ import { ACTIVE_VALUES_FILTER } from '../config/constants';
 //**************************************************************************************************
 
 export const findOneElement = async (database: Db, collection: string, filter: object) => {
-    return database
-    .collection(collection)
-    .findOne(filter);
+    return database.collection(collection).findOne(filter);
 };
 
 
@@ -325,6 +323,19 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
       }
     }
 
+  
+//**************************************************************************************************
+//                           Detalle de los productos                                                           
+//**************************************************************************************************
+
+  export const detailsProduct = async(database: Db, collection: string, filter: object = {} ) => {
+    
+    // return await database.collection(collection).aggregate(pipeline)
+    // .skip(paginationOptions.skip)
+    // .limit(paginationOptions.itemsPage)
+    // .sort({price: sortBy})
+    // .toArray()
+  }
 
 
 

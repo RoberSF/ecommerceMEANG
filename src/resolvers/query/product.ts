@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import { pagination } from '../../lib/pagination';
 import { COLLECTIONS } from '../../config/constants';
-import { findElementsOfferStock, findElementsSub, findElementsSubRandom } from '../../lib/db-functions';
+import { findElements, findElementsOfferStock, findElementsSub, findElementsSubRandom, findOneElement } from '../../lib/db-functions';
 
 const resolversProductsQuery: IResolvers = {
 
@@ -107,7 +107,21 @@ const resolversProductsQuery: IResolvers = {
 
    },
 
-
+    async productDetails(_,{id}, { db }) {
+        try {
+            return {
+                info: { id },
+                status: true,
+                message: 'Product details correctamente cargados',
+                product: await findOneElement(db,  COLLECTIONS.PRODUCTS, {id:id})
+            }
+        } catch (error) {
+            return {
+            info: null,
+            status: false,
+            message: `Product details no cargados: ${error}`
+        }}
+    }
     
    },
  };

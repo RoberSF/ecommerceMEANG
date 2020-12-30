@@ -7,5 +7,6 @@ type Product {
     active: Boolean!
     price: Float!
     stock: Int!
+    similarProducts: [Product]
 }
 

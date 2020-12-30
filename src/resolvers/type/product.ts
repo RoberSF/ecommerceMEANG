@@ -23,6 +23,17 @@ const resolversProductsType: IResolvers = {
             } catch(error) {
                 return error
             }
+        },
+        similarProducts: async(parent,__, {db}) => {
+            return findElements(
+                db, 
+                COLLECTIONS.PRODUCTS, 
+                { 
+                    $and: [ 
+                        { product_id: parent.product_id},
+                        { id: { $ne: parent.id}}
+                     ] 
+                })
         }
     
    },
