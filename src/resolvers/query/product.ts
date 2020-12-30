@@ -8,7 +8,6 @@ const resolversProductsQuery: IResolvers = {
   Query: {
 
    async products(_, {page, itemsPerPage, active}, { db }) {
-
     try {
         const paginationData = await pagination(db, COLLECTIONS.PRODUCTS, page, itemsPerPage);
         return {
@@ -21,7 +20,7 @@ const resolversProductsQuery: IResolvers = {
             status: true,
             message: 'Lista de productos correctamente cargada',
             // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-            products: await findElementsSub(db, COLLECTIONS.PRODUCTS, {active: active}, paginationData)
+            products: await findElements(db, COLLECTIONS.PRODUCTS, {active: active}, paginationData)
         }
     } catch (error) {
         return {
@@ -113,7 +112,7 @@ const resolversProductsQuery: IResolvers = {
                 info: { id },
                 status: true,
                 message: 'Product details correctamente cargados',
-                product: await findOneElement(db,  COLLECTIONS.PRODUCTS, {id:id})
+                product: await findOneElement(db,  COLLECTIONS.PRODUCTS, {id})
             }
         } catch (error) {
             return {

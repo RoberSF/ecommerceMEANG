@@ -15,8 +15,7 @@ import { ACTIVE_VALUES_FILTER } from '../config/constants';
     //                 Comprobar el último usuario registrado para asignar ID                                                           
     //**************************************************************************************************
     
-    export  const asingDocumentId = async (database: Db, collection: string, sort: object = {registerDate: -1}
-        ) => {
+    export  const asingDocumentId = async (database: Db, collection: string, sort: object = {registerDate: -1} ) => {
             const lastElement = await database
             .collection(collection)
             .find()
@@ -82,8 +81,23 @@ export const inserManyElements = async (database: Db, collection: string, docume
 //                   Lista elementos de una colección                                                                
 //**************************************************************************************************
 
-export const findElements = async(database: Db, collection: string, filter:object = {}) => {
-   return await database.collection(collection).find(filter).toArray();
+export const findElements = async(database: Db, collection: string, args:any = {}, paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
+
+  console.log('args',args);
+  let filter = {}
+  let filteredActive: object = {active: true};
+
+  if(args.active === ACTIVE_VALUES_FILTER.ALL){
+    filteredActive = {}
+  } else if(args.active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+    filteredActive = {active: false}
+  }
+   return await database.collection(collection).find(filter)
+       .filter(filteredActive)
+       .skip(paginationOptions.skip)
+       .limit(paginationOptions.itemsPage)
+       .sort({id: -1})
+       .toArray();
 }
 
 
@@ -92,7 +106,6 @@ export const findElements = async(database: Db, collection: string, filter:objec
 //**************************************************************************************************
 
 export const findElementsSub = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
-
 
 
 let filter = {};
@@ -323,19 +336,12 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
       }
     }
 
+  //**************************************************************************************************
+  //               Búsqueda de elementos genérica ya que las otras tienen filtros                                                           
+  //**************************************************************************************************
   
-//**************************************************************************************************
-//                           Detalle de los productos                                                           
-//**************************************************************************************************
-
-  export const detailsProduct = async(database: Db, collection: string, filter: object = {} ) => {
-    
-    // return await database.collection(collection).aggregate(pipeline)
-    // .skip(paginationOptions.skip)
-    // .limit(paginationOptions.itemsPage)
-    // .sort({price: sortBy})
-    // .toArray()
-  }
+  export const findElementsNormal = async(database: Db, collection: string, filter:object = {}) => {
+      return await database.collection(collection).find(filter).toArray();}
 
 
 

@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findOneElement } from '../../lib/db-functions';
+import { findElementsNormal, findOneElement } from '../../lib/db-functions';
 
 const resolversProductsType: IResolvers = {
 
@@ -25,7 +25,7 @@ const resolversProductsType: IResolvers = {
             }
         },
         similarProducts: async(parent,__, {db}) => {
-            return findElements(
+            return findElementsNormal(
                 db, 
                 COLLECTIONS.PRODUCTS, 
                 { 
