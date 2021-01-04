@@ -1,6 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import StripeApi from '../../../lib/stripe.api';
 import { IStripeCustomer } from '../../../interfaces/stripe/customer.interface';
+import { STRIPE_OBJECTS, STRIPE_ACTIONS } from '../../../lib/stripe.api';
 
 
 const resolversStripeCustomersQuery: IResolvers = {
@@ -18,13 +19,12 @@ const resolversStripeCustomersQuery: IResolvers = {
                     ending_before: endingBefore
                 }
                 }
-                
-            const stripe = new StripeApi().stripe;
-            return await stripe.customers.list(
+
+            return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.LIST,
                 {
-                limit, ...pagination
-                }
-              ).then( (result: {has_more: boolean, data: Array<IStripeCustomer>}) => {
+                    limit, ...pagination
+                })
+                .then( (result: {has_more: boolean, data: Array<IStripeCustomer>}) => {
                 return {
                     status: true,
                     message: `Lista cargada correctamente`,

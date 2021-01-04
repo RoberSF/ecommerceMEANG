@@ -1,6 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import slugify from 'slugify';
 import StripeApi from '../../../lib/stripe.api';
+import { STRIPE_OBJECTS, STRIPE_ACTIONS } from '../../../lib/stripe.api';
 
 
 const resolversStripeCustomerMutation: IResolvers = {
@@ -11,15 +12,13 @@ const resolversStripeCustomerMutation: IResolvers = {
     // genre = name
     async createCustomer(_, { name, email, description }, { db }) {
 
-        const stripe = new StripeApi().stripe;
-
-        return await stripe.customers.create(
-            {
-            name,
-            email,
-            description: `${name} (${email} )`           
-            }
-          ).then( (result: object) => {
+        return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.CREATE,
+          {
+          name,
+          email,
+          description: `${name} (${email} )`           
+          })
+          .then( (result: object) => {
             return {
                 status: true,
                 message: `El cliente ${name} se ha creado correctamente`,
