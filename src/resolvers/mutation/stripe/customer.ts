@@ -3,7 +3,7 @@ import slugify from 'slugify';
 import { IStripeCustomer } from '../../../interfaces/stripe/customer.interface';
 import StripeApi from '../../../lib/stripe.api';
 import { STRIPE_OBJECTS, STRIPE_ACTIONS } from '../../../lib/stripe.api';
-import { updateFindOne, updateOne, findOneElement } from '../../../lib/db-functions';
+import { updateOne, findOneElement } from '../../../lib/db-functions';
 import { COLLECTIONS } from '../../../config/constants';
 import { IUser } from '../../../interfaces/user.interface';
 
@@ -85,6 +85,23 @@ const resolversStripeCustomerMutation: IResolvers = {
                 customer: null
             };
           });
+    },
+
+    async updateCustomer(_, {id, customer}) {
+          return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.UPDATE, id, customer )
+                .then( async (result: IStripeCustomer) => {
+                    return {
+                        status: true,
+                        message: `El cliente ${result.name} se ha actualizado correctamente`,
+                        customer: result
+                    }
+                }
+                ).catch ( (error: Error) => {
+                    return {
+                        status: true,
+                        message: `Error: ${error}`,
+                    }
+                })
     }
   }
 
@@ -92,10 +109,3 @@ const resolversStripeCustomerMutation: IResolvers = {
 
 
 export default resolversStripeCustomerMutation
-
-
-  // return {
-  //     status: true,
-  //     message: `El cliente ${name} se ha creado correctamente`,
-  //     customer: result
-  // };
