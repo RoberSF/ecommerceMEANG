@@ -4,7 +4,9 @@ export const STRIPE_OBJECTS = {
 
 export const STRIPE_ACTIONS = {
     CREATE: 'create',
-    LIST: 'list'
+    LIST: 'list',
+    RETRIEVE: 'retrieve',
+    UPDATE: 'update'
 }
 
 
