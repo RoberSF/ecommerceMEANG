@@ -6,7 +6,8 @@ export const STRIPE_ACTIONS = {
     CREATE: 'create',
     LIST: 'list',
     RETRIEVE: 'retrieve',
-    UPDATE: 'update'
+    UPDATE: 'update',
+    DELETE: 'del'
 }
 
 
