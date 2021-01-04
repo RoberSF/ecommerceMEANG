@@ -72,7 +72,7 @@ const resolversUserMutation: IResolvers = {
 
   
       // En caso contrario que genere el document para insertarlo
-      const filterGenreObjectId = { id: user?.id}
+      const filterUserObjectId = { id: user?.id}
       const objectUpdate = { 
         name: user.name,
         lastname: user.lastname,
@@ -84,7 +84,7 @@ const resolversUserMutation: IResolvers = {
 
       try {
           // return await updateOne(db,COLLECTIONS.USERS,filterGenreObjectId, objectUpdate)
-          return await updateOne(db,COLLECTIONS.USERS,filterGenreObjectId, objectUpdate)
+          return await updateOne(db,COLLECTIONS.USERS,filterUserObjectId, objectUpdate)
           .then(
               result => {
                   // También hay result.n que nos dice el número de elementos que nos devolvió
