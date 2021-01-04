@@ -88,6 +88,7 @@ const resolversStripeCustomerMutation: IResolvers = {
     },
 
     async updateCustomer(_, {id, customer}) {
+
           return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.UPDATE, id, customer )
                 .then( async (result: IStripeCustomer) => {
                     return {
@@ -102,6 +103,37 @@ const resolversStripeCustomerMutation: IResolvers = {
                         message: `Error: ${error}`,
                     }
                 })
+    },
+
+    async deleteCustomer(_, { id }, {db}) {
+
+      return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.DELETE, id)
+
+      .then( async (result: { id: string, deleted: boolean}) => {
+
+        if ( result.deleted ) {
+
+          console.log(result.id);
+            
+          const resultOperation = await db.collection(COLLECTIONS.USERS).updateOne({stripeCustomer: result.id}, {$unset: {stripeCustomer: result.id}})
+          return {
+              status: result.deleted && resultOperation ? true : false,
+              message:  result.deleted && resultOperation ? `El cliente ${result.id} se ha borrado correctamente` : 
+               'Usuario no actualizado en la base de datos privada',
+          }
+        }
+
+        return {
+          status: false,
+          message: `El cliente ${result.id} no se ha borrado correctamente`,
+        }
+      }
+      ).catch ( (error: Error) => {
+          return {
+              status: true,
+              message: `Error: ${error}`,
+          }
+      })
     }
   }
 
