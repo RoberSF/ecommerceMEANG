@@ -13,6 +13,7 @@ class StripeApi {
         apiVersion: process.env.STRIPE_API_VERSION
     });
 
+    // Creamos una función global para consultar la api desde los resolvers
     async execute( object: string, action: string, ...args: [ (string | object), (string | object)?] ) {
 
         return await this.stripe[object][action](...args);
