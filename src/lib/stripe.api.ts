@@ -12,7 +12,8 @@ export const STRIPE_ACTIONS = {
     CREATE_CARD_CLIENT: 'createSource',
     DETAILS_CARD: 'retrieveSource',
     UPDATE_CARD: 'updateSource',
-    DELETE_CARD: 'deleteSource'
+    DELETE_CARD: 'deleteSource',
+    LIST_CARDS: 'listSources'
 }
 
 
@@ -25,6 +26,22 @@ class StripeApi {
     async execute( object: string, action: string, ...args: [ (string | object), (string | object)?, (string | object)?] ) {
 
         return await this.stripe[object][action](...args);
+    };
+
+    async getPaginationOfStripe(startingAfter: string, endingBefore: string ) {
+
+        let pagination;
+        if ( startingAfter !== '' && endingBefore === '') {
+            pagination = {
+                starting_after: startingAfter
+            } 
+        } else if ( startingAfter === '' && endingBefore !== '' ) {
+            pagination = {
+                ending_before: endingBefore
+            }
+            }
+
+        return pagination;
     }
 }
 
