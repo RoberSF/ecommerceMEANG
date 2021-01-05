@@ -8,6 +8,7 @@ const resolversStripeCardMutation: IResolvers = {
 
 // Tipo raíz "Mutation"
   Mutation: {
+
     async createCardToken(_, {card}) {
 
         return await new StripeApi().execute(
@@ -22,20 +23,41 @@ const resolversStripeCardMutation: IResolvers = {
             },
           }
         ).then ( (result: {id: string}) => {
-            console.log(result.id);
             return {
                 status: true,
                 message: `Token ${result.id} creado correctamente`,
                 token: result.id
             }
         }).catch ( (error: Error) => {
-            console.log(card);
             return {
                 status: false,
                 message: `Error: ${error}`,
             }
         })
+    },
+
+    async createCardWithClient(_, { customer, tokenCard }) {
+
+      return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.CREATE_CARD_CLIENT,
+        customer,
+        {
+          source: tokenCard
+        }).then((result: { id: string }) => {
+
+          return {
+            status: true,
+            message: `Tarjeta ${result.id} creada correctamente`,
+            card: result.id
+          }
+        }).catch((error: Error) => {
+          return {
+            status: false,
+            message: `Error: ${error}`,
+          }
+        })
     }
+
+
   }
 
 }
