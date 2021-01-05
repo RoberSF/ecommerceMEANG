@@ -9,16 +9,7 @@ const resolversStripeCustomersQuery: IResolvers = {
 
         async customers(_, { limit, startingAfter, endingBefore} ) {
 
-            let pagination;
-            if ( startingAfter !== '' && endingBefore === '') {
-                pagination = {
-                    starting_after: startingAfter
-                } 
-            } else if ( startingAfter === '' && endingBefore !== '' ) {
-                pagination = {
-                    ending_before: endingBefore
-                }
-                }
+            const pagination = new StripeApi().getPaginationOfStripe(startingAfter, endingBefore )
 
             return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.LIST,
                 {
