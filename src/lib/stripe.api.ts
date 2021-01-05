@@ -8,7 +8,8 @@ export const STRIPE_ACTIONS = {
     LIST: 'list',
     RETRIEVE: 'retrieve',
     UPDATE: 'update',
-    DELETE: 'del'
+    DELETE: 'del',
+    CREATE_CARD_CLIENT: 'createSource'
 }
 
 
