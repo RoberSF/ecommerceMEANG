@@ -40,20 +40,20 @@ const resolversStripeCustomerMutation: IResolvers = {
               // 1.2.1.1.1.- Primero buscamos el usuario en MongoDB
                // Para que este await funcione, hay que poner el async en el result
               const user: IUser =  await findOneElement(db,COLLECTIONS.USERS,filterUserObject)
-              console.log('1','He buscado a uno');
+              // console.log('1','He buscado a uno');
               // 1.2.1.1.2.- Si existe usuario en MongoDB actualizamos
               if(user) {
-                console.log('2','Existe el user y es',user);
+                // console.log('2','Existe el user y es',user);
                 // Este resul.id viene de la creación de stripe
                 user.stripeCustomer = result.id
                 const objectUpdate = { 
                   stripeCustomer: user.stripeCustomer
                  };
-                console.log('3', 'stripeCustomer es:',user.stripeCustomer);
+                // console.log('3', 'stripeCustomer es:',user.stripeCustomer);
                 const resultUserOperation = await updateOne(db,COLLECTIONS.USERS,filterUserObject,objectUpdate )
                 .then(
                   result => {
-                    console.log('4','Después de actualizar uno:', result.result );
+                    // console.log('4','Después de actualizar uno:', result.result );
                       // También hay result.n que nos dice el número de elementos que nos devolvió
                       if (result) {
                           return {
