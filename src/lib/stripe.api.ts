@@ -9,7 +9,10 @@ export const STRIPE_ACTIONS = {
     RETRIEVE: 'retrieve',
     UPDATE: 'update',
     DELETE: 'del',
-    CREATE_CARD_CLIENT: 'createSource'
+    CREATE_CARD_CLIENT: 'createSource',
+    DETAILS_CARD: 'retrieveSource',
+    UPDATE_CARD: 'updateSource',
+    DELETE_CARD: 'deleteSource'
 }
 
 
@@ -19,7 +22,7 @@ class StripeApi {
     });
 
     // Creamos una función global para consultar la api desde los resolvers
-    async execute( object: string, action: string, ...args: [ (string | object), (string | object)?] ) {
+    async execute( object: string, action: string, ...args: [ (string | object), (string | object)?, (string | object)?] ) {
 
         return await this.stripe[object][action](...args);
     }
