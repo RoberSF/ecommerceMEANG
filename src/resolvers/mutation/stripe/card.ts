@@ -46,7 +46,7 @@ const resolversStripeCardMutation: IResolvers = {
 
           return {
             status: true,
-            message: `Tarjeta ${result.id} creada correctamente`,
+            message: `Tarjeta ${result.id} asignada correctamente`,
             card: result.id
           }
         }).catch((error: Error) => {
