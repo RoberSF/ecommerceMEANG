@@ -1,5 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import { createNamespaceExportDeclaration } from 'typescript';
+import { IStripeCard } from '../../../interfaces/stripe/card.interface';
 import StripeApi, { STRIPE_OBJECTS } from '../../../lib/stripe.api';
 import { STRIPE_ACTIONS } from '../../../lib/stripe.api';
 
@@ -47,7 +48,7 @@ const resolversStripeCardMutation: IResolvers = {
           return {
             status: true,
             message: `Tarjeta ${result.id} asignada correctamente`,
-            card: result.id
+            id: result.id
           }
         }).catch((error: Error) => {
           return {
@@ -55,6 +56,47 @@ const resolversStripeCardMutation: IResolvers = {
             message: `Error: ${error}`,
           }
         })
+    },
+
+    async updateCard(_, {customer, cardId, cardDetails}) {
+
+      return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.UPDATE_CARD, 
+        customer, cardId, cardDetails )
+            .then( async (result: IStripeCard) => {
+                return {
+                    status: true,
+                    message: `Tarjeta ${result.id} actualizada correctamente`,
+                    id: result.id,
+                    card: result
+                }
+            }
+            ).catch ( (error: Error) => {
+                return {
+                    status: true,
+                    message: `Error: ${error}`,
+                }
+            })
+    },
+
+    async deleteCard(_, { customer, cardId }) {
+
+      return await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.DELETE_CARD, customer, cardId)
+
+      .then((result: {id: string, deleted: boolean}) => {
+        return {
+            status: result.deleted,
+            message: result.deleted ? `Tarjeta ${result.id} borrada correctamente` : `No se ha borrado`,
+            id: result.id
+        }
+    }
+
+        
+      ).catch ( (error: Error) => {
+          return {
+              status: true,
+              message: `Error: ${error}`,
+          }
+      })
     }
 
 
