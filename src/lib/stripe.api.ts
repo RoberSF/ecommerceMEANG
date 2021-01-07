@@ -44,6 +44,20 @@ class StripeApi {
 
         return pagination;
     }
+
+    // Sin uso por no refactor
+    protected async getError(error: Error) {
+        {
+          return {
+            status: false,
+            message: 'Error: '.concat(error.message),
+            hasMore: false,
+            customer: undefined,
+            card: undefined,
+            cards: undefined
+          };
+        }
+      }
 }
 
 export default StripeApi;
