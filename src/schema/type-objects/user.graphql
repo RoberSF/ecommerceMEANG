@@ -23,4 +23,6 @@ type User {
   role: Role!
   "Activo o no activo"
   active: Boolean
+  "Cliente de Stripe"
+  stripeCustomer: String
 }
