@@ -10,7 +10,7 @@ const resolversStripeCardMutation: IResolvers = {
 // Tipo raíz "Mutation"
   Mutation: {
 
-    async createCardToken(_, {card}) {
+    async createCard(_, {card}) {
 
         return await new StripeApi().execute(
           STRIPE_OBJECTS.TOKENS,
