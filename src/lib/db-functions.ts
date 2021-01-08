@@ -102,16 +102,18 @@ export const findElements = async(database: Db, collection: string, args:any = {
 
 
 //**************************************************************************************************
-//                   Lista de elementos de una colección con paginación                                                          
+//                   Lista de elementos de una colección con paginación y filtro por plataforma
+
+// (En caso de que lista de usuarios, géneros etc no funcione, cambiar a findElements que sólo tiene filtro "active" )                                                  
 //**************************************************************************************************
 
 export const findElementsSub = async(database: Db, collection: string, args:any,paginationOptions: IPaginationOptions = {page: 1, pages: 1, itemsPage: -1, skip: 0, total: -1}) => {
 
-
 let filter = {};
 let filteredActive: object = {active: {$ne: false}};
 // let platform_id = args.platform_id;
-let platform_id: Array<string> = args.platform_id;
+let platform_id: Array<any> = [];
+const asignPlatform_Id = args.platform_id ? platform_id = args.platform_id : platform_id = [];
 let filterTogether = filteredActive
 
 
@@ -127,14 +129,12 @@ let filterTogether = filteredActive
   }
   
   // if (platform_id !== '' && platform_id !== undefined){
-  if (platform_id.length > 0 && platform_id !== undefined){
-
+  if (platform_id && platform_id !== undefined){
     // filterTogether = {...filteredActive, ...{platform_id}} // { active: { '$ne': false }, platform_id: [ '4', '18' ] }
     filterTogether = {...filteredActive, ...{platform_id: {$in: platform_id}}   } // { active: { '$ne': false }, platform_id: { '$in': [ '4', '18' ] } }
   }
 
   if (platform_id.length <= 0 || platform_id == undefined){
-
     filterTogether = {...filteredActive}
   }
 
