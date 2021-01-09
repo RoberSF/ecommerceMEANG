@@ -4,16 +4,20 @@ import StripeApi from '../../../lib/stripe.api';
 import { STRIPE_OBJECTS, STRIPE_ACTIONS } from '../../../lib/stripe.api';
 import { IStripeCustomer } from '../../../interfaces/stripe/customer.interface';
 import { IStripeCard } from '../../../interfaces/stripe/card.interface';
+import { IStock } from '../../../interfaces/stock.interface';
+import { findOneElement, updateStock } from '../../../lib/db-functions';
+import { COLLECTIONS, SUBSCRIPTIONS_EVENT } from '../../../config/constants';
 
 const resolversStripeChargeMutation: IResolvers = {
 
 // Tipo raíz "Mutation"
   Mutation: {
 
-    async chargeOrder(_, { payment }) {
+    async chargeOrder(_, { payment, stockChange }, {db, pubsub}) {
 
       // Comprobar que existe el cliente
       let payment_customer: IPayment = payment.customer;
+      let stockChange_: Array<IStock> = stockChange
       const userData:IStripeCustomer = await new StripeApi().execute(STRIPE_OBJECTS.CUSTOMERS, STRIPE_ACTIONS.RETRIEVE,  payment_customer )
       if ( userData) {
 
@@ -78,6 +82,29 @@ const resolversStripeChargeMutation: IResolvers = {
       return await new StripeApi().execute(STRIPE_OBJECTS.CHARGES, STRIPE_ACTIONS.CREATE,
         paymentRound).then( (result: object) => {
           // console.log('10.-', result);
+
+          // Hacemos la actulización del stock después del pago. Refactorizar en un servicio
+          try {
+            stockChange_.map( async (item:IStock) => {
+                console.log('Dentro del map');
+                const itemsDetails = await findOneElement(db, COLLECTIONS.PRODUCTS, {id: +item.id});
+                console.log(itemsDetails);
+                // Comprobación para que el stock no pueda ser menos que cero
+                if(item.increment < 0 && ((item.increment + itemsDetails.stock) < 0)) {
+                   item.increment = -itemsDetails.stock; // el - es para que se ponga en cero
+                 }
+                await updateStock(db, COLLECTIONS.PRODUCTS,{ id: +item.id}, {stock: item.increment});
+                itemsDetails.stock += item.increment;
+                console.log(itemsDetails.stock);
+                // Publicamos al socket uno a uno el cambio 
+                pubsub.publish(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT, { selectProductStockUpdate: itemsDetails});
+            })
+
+            return true
+        } catch(e) {
+          console.log(e);
+            return false
+        }
           return {
             status: true,
             message: `El cargo se ha hecho correctamente`,
