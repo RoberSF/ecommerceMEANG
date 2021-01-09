@@ -1,0 +1,9 @@
+type Mutation {
+
+    "Para actualizar la información del stcok. Se puede actualizar un producto o más"
+    updateStock(update:  [ProductStockInput!]! ): Boolean
+
+}
+
+
+
