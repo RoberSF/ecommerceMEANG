@@ -4,10 +4,11 @@ import cors from 'cors';
 import compression from 'compression';
 import { createServer } from 'http';
 import environments from './config/environments';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, PubSub } from 'apollo-server-express';
 import schema from './schema';
 import expressPlayground from 'graphql-playground-middleware-express';
 import Database from './lib/database';
+import chalk from 'chalk';
 
 /* ***************************************************************************************/
 // Configuración de las variables de entorno (lectura)
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 async function init() {
 
     const app = express();
+    const pubsub = new PubSub(); // Para obtener las publicaciones en tiempo real. Es una conexión a webSocket
 
     app.use('*', cors());
 
@@ -47,7 +49,7 @@ async function init() {
 
     const context = async({req, connection}: IContext) => { // Typescript nos obliga a crear la interface a causa del tipado
         const token = (req) ? req.headers.authorization : connection.authorization;
-        return { db, token };
+        return { db, token, pubsub};
     };
 
 /* ***************************************************************************************/
@@ -71,12 +73,20 @@ async function init() {
 
 
     const httpServer = createServer(app);
+    server.installSubscriptionHandlers(httpServer) // Para escuchuchar las publicaciones a tiempo real. Tiene que ir aquí si o si.
     const PORT = process.env.PORT || 2002;
     httpServer.listen(
         {
             port: PORT
         },
-        () => console.log(`http://localhost:${PORT} API MEANG - Online Shop Start`)
+        
+        () => {
+            console.log('======================SERVE API GRAPHQL================================');
+            console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
+            console.log(`MESSAGE: ${chalk.greenBright('API MEANG - Online Shop CONNECTED')}`);
+            console.log(`GRAPHQL SERVER => @: http://localhost:${PORT}/graphql`)
+            console.log(`WS CONNECTION =>  @: ws://localhost:${PORT}/graphql`);
+        }
     );
 }
 
