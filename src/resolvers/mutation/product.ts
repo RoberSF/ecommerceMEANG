@@ -14,7 +14,6 @@ const resolversProductMutation: IResolvers = {
 
         try {
             updateList.map( async (item:IStock) => {
-                console.log(item);
                 await updateStock(db, COLLECTIONS.PRODUCTS,{ id: +item.id}, {stock: item.increment})
             })
 
