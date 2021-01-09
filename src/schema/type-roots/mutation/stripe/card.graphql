@@ -1,6 +1,6 @@
 type Mutation {
     "Crear el token que utilizaremos para realizar los pagos con tarjeta"
-    createCardToken(card: CardInput): ResultStripeCard
+    createCard(card: CardInput): ResultStripeCard
     "Crear tarjeya asociada al cliente"
     createCardWithClient(customer: ID!, tokenCard: String!): ResultStripeCard
     "Actualizar tarjeta"
