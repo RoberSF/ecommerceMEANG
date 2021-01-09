@@ -344,6 +344,13 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
       return await database.collection(collection).find(filter).toArray();}
 
 
+//**************************************************************************************************
+//                 Manejar el stock de un producto                                                             
+//**************************************************************************************************
+
+  export const updateStock = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
+    return await database.collection(collection).updateOne(filter, {$inc: objectUpdated});
+  }
 
 
 
