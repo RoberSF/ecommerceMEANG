@@ -5,6 +5,7 @@ import resolversUserMutation from './user';
 import resolversMailMutation from './email';
 import stripeResolvers from './stripe';
 import resolversProductMutation from './product';
+import resolversAllMutation from './all';
 
 const mutationResolvers = GMR.merge([
     resolversUserMutation,
@@ -12,7 +13,8 @@ const mutationResolvers = GMR.merge([
     resolversTagMutation,
     resolversMailMutation,
     stripeResolvers,
-    resolversProductMutation
+    resolversProductMutation,
+    resolversAllMutation
 ]);
 
 export default mutationResolvers
