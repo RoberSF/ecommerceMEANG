@@ -1,8 +1,9 @@
 import { IResolvers } from 'graphql-tools';
 import { COLLECTIONS } from '../../config/constants';
-import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne } from '../../lib/db-functions';
+import { inserOneElement, findOneElement, asingDocumentId, updateOne, deleteOne, insertUpdateAll } from '../../lib/db-functions';
 import GenresService from '../../services/genre.service';
 import slugify from 'slugify';
+import { updateLabel } from 'typescript';
 
 
 const resolversGenreMutation: IResolvers = {
@@ -259,7 +260,9 @@ const resolversGenreMutation: IResolvers = {
                 genre: null
             }
         }
-    }
+    },
+
+
   }
 
 }
