@@ -12,6 +12,7 @@ const resolversTagQuery: IResolvers = {
 //**************************************************************************************************
 
    async tags(_, {page, itemsPerPage, active}, { db }) {
+       console.log(active);
 
     try {
         const paginationData = await pagination(db, COLLECTIONS.TAGS, page, itemsPerPage);
@@ -24,8 +25,7 @@ const resolversTagQuery: IResolvers = {
                     },
             status: true,
             message: 'Lista de tags correctamente cargada',
-            // genres: await findElements(db, COLLECTIONS.GENRES) // Primer método para lista de genres
-            tags: await findElementsSub(db, COLLECTIONS.TAGS, active, paginationData)
+            tags: await findElementsSub(db, COLLECTIONS.TAGS, {active: active}, paginationData)
         }
     } catch (error) {
         return {

@@ -16,7 +16,7 @@ import chalk from 'chalk';
 
 if (process.env.NODE_ENV !== 'production') {
     const env = environments;
-    console.log(env);
+    console.log('Enviroments',env);
 }
 
 
@@ -29,6 +29,7 @@ async function init() {
 
     const app = express();
     const pubsub = new PubSub(); // Para obtener las publicaciones en tiempo real. Es una conexión a webSocket
+    // const paypal = require('paypal-rest-sdk');
 
     app.use('*', cors());
 
@@ -81,11 +82,11 @@ async function init() {
         },
         
         () => {
-            console.log('======================SERVE API GRAPHQL================================');
+            console.log('==================SERVER API GRAPHQL====================');
             console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
-            console.log(`MESSAGE: ${chalk.greenBright('API MEANG - Online Shop CONNECTED')}`);
-            console.log(`GRAPHQL SERVER => @: http://localhost:${PORT}/graphql`)
-            console.log(`WS CONNECTION =>  @: ws://localhost:${PORT}/graphql`);
+            console.log(`MESSAGE: ${chalk.greenBright('API MEANG - Online Shop CONNECT!!')}`);
+            console.log(`GraphQL Server => @: http://localhost:${PORT}/graphql `);
+            console.log(`WS Connection => @: ws://localhost:${PORT}/graphql `);
         }
     );
 }

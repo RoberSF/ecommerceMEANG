@@ -9,8 +9,7 @@ const resolversProductSuscription: IResolvers = {
         
         updateStockProduct: {
             
-            subscribe: (_, __, { pubsub }) => {
-                pubsub.asyncIterator(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT)}
+            subscribe: (_, __, { pubsub }) => pubsub.asyncIterator(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT)
         },
 
         //**************************************************************************************************
@@ -22,7 +21,6 @@ const resolversProductSuscription: IResolvers = {
         selectProductStockUpdate: {
 
             subscribe: withFilter((_, __, { pubsub }) => pubsub.asyncIterator(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT), (payload, variables) => {
-                console.log(payload, variables);
                 return +payload.selectProductStockUpdate.id === +variables.id;
             }),
         }
