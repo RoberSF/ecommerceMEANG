@@ -86,9 +86,7 @@ const resolversStripeChargeMutation: IResolvers = {
           // Hacemos la actulización del stock después del pago. Refactorizar en un servicio
           try {
             stockChange_.map( async (item:IStock) => {
-                console.log('Dentro del map');
                 const itemsDetails = await findOneElement(db, COLLECTIONS.PRODUCTS, {id: +item.id});
-                console.log(itemsDetails);
                 // Comprobación para que el stock no pueda ser menos que cero
                 if(item.increment < 0 && ((item.increment + itemsDetails.stock) < 0)) {
                    item.increment = -itemsDetails.stock; // el - es para que se ponga en cero
@@ -100,7 +98,6 @@ const resolversStripeChargeMutation: IResolvers = {
                 pubsub.publish(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT, { selectProductStockUpdate: itemsDetails});
             })
 
-            return true
         } catch(e) {
           console.log(e);
             return false
