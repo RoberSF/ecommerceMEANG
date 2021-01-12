@@ -77,6 +77,7 @@ export const inserManyElements = async (database: Db, collection: string, docume
 };
 
 
+
 //**************************************************************************************************
 //                   Lista elementos de una colección                                                                
 //**************************************************************************************************
@@ -351,6 +352,14 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
   export const updateStock = async(database: Db, collection: string, filter:object = {}, objectUpdated: object = {}) => {
     return await database.collection(collection).updateOne(filter, {$inc: objectUpdated});
   }
+
+  //**************************************************************************************************
+  //                 Método para añadir un campo a todos los registros                                                           
+  //**************************************************************************************************
+  
+  export const insertUpdateAll = async (database: Db, collection: string) => {
+    return await database.collection(collection).updateMany({}, {$set : {"active":true}})
+};
 
 
 
