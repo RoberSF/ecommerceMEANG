@@ -34,6 +34,7 @@
     "dependencies": {
         "@graphql-tools/load-files": "^6.2.4",
         "@graphql-tools/merge": "^6.2.5",
+        "@types/paypal-rest-sdk": "^1.7.5",
         "apollo-server-express": "^2.11.0",
         "bcrypt": "^4.0.1",
         "chalk": "^4.0.0",
@@ -50,6 +51,7 @@
         "mongodb": "^3.5.5",
         "ncp": "^2.0.0",
         "nodemailer": "^6.4.17",
+        "paypal-rest-sdk": "^1.8.1",
         "slugify": "^1.4.6",
         "stripe": "^8.129.0",
         "subscriptions-transport-ws": "^0.9.18",
