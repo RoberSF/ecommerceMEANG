@@ -5,6 +5,7 @@ import JWT from '../../lib/jwt';
 import bcrypt from 'bcrypt';
 import { findOneElement,findElementsSub } from '../../lib/db-functions';
 import { pagination } from '../../lib/pagination';
+import UserService from '../../services/user.service';
 
 
 const resolversUsersQuery: IResolvers = {
@@ -71,12 +72,12 @@ const resolversUsersQuery: IResolvers = {
     async login(_, { email, password }, { db }) { // El db es la instancia
       try {
         const user = await findOneElement(db, COLLECTIONS.USERS, {email})
-
         if (user === null) {
           return {
             status: false,
             message: 'Usuario no existe',
             token: null,
+
           };
         }
         const passwordCheck = bcrypt.compareSync(password, user.password); // Función para comparar la password de la db y el que me dan
@@ -90,7 +91,8 @@ const resolversUsersQuery: IResolvers = {
           status: true,
           message: !passwordCheck ? 'Password y usuario no son correctos, sesión no iniciada' : 'Usuario cargado correctamente',
           token: !passwordCheck ? null : new JWT().sign({ user }, EXPIRETIME.H24),
-          user
+          user,
+          menu: new UserService().obtenerMenu(user.role)
         };
       } catch (error) {
         return {
@@ -103,7 +105,9 @@ const resolversUsersQuery: IResolvers = {
 
 
     me(_, __, { token }) {
+
       let info = new JWT().verify(token); // Verificamos el valor del token si es válido
+      console.log(Object.values(info)[0].role)
       if (info === MESSAGES.TOKEN_VERICATION_FAILED) {
         return {
           status: false,
@@ -114,7 +118,8 @@ const resolversUsersQuery: IResolvers = {
       return {
         status: true,
         message: 'Usuario autenticado correctamente mediante el token',
-        user: Object.values(info)[0] // información relacionada con el usuario
+        user: Object.values(info)[0], // información relacionada con el usuario
+        menu: new UserService().obtenerMenu(Object.values(info)[0].role)
       };
     },
     

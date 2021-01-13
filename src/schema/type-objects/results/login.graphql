@@ -8,4 +8,6 @@ type ResultLogin implements Result {
   token: String
   "Información del usuario"
   user: User
+  "Menu del usuario"
+  menu: [MenuUser]
 }

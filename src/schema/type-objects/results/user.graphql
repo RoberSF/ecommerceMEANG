@@ -5,4 +5,6 @@ type ResultUser implements Result {
   message: String!
   "Información del usuario logueado"
   user: User
+  "Menu del usuario"
+  menu: [MenuUser]
 }
