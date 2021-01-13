@@ -29,7 +29,7 @@ async function init() {
 
     const app = express();
     const pubsub = new PubSub(); // Para obtener las publicaciones en tiempo real. Es una conexión a webSocket
-    // const paypal = require('paypal-rest-sdk');
+    const paypal = require('paypal-rest-sdk');
 
     app.use('*', cors());
 
@@ -50,7 +50,8 @@ async function init() {
 
     const context = async({req, connection}: IContext) => { // Typescript nos obliga a crear la interface a causa del tipado
         const token = (req) ? req.headers.authorization : connection.authorization;
-        return { db, token, pubsub};
+        // return { db, token, pubsub};
+        return { db, token, pubsub, paypal};
     };
 
 /* ***************************************************************************************/
