@@ -1,7 +1,7 @@
 import { Db } from "mongodb";
 import { IPaginationOptions } from '../interfaces/pagination-options.interface';
 import { pagination } from "./pagination";
-import { ACTIVE_VALUES_FILTER } from '../config/constants';
+import { ACTIVE_VALUES_FILTER, COLLECTIONS } from '../config/constants';
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -361,7 +361,49 @@ export const findElementsSubRandom = async(database: Db, collection: string, arg
     return await database.collection(collection).updateMany({}, {$set : {"active":true}})
 };
 
+  //**************************************************************************************************
+  //                 Método de filtrado para búsqueda component                                                       
+  //**************************************************************************************************
+  export const findElementsSubSearch = async(database: Db, args:any) => {
 
+    let filterName = args.name 
+    let filterActive: object = {$ne: false}
+
+    if(args.active === ACTIVE_VALUES_FILTER.INACTIVE ) {
+      filterActive = {$eq: false}
+    }
+    //utilizar un $or // no works por que choca con el $and. Tendría que crear dos objetos diferentes
+    if(args.active === ACTIVE_VALUES_FILTER.ALL ) {
+      filterActive = {$or: [false,true]}
+    }
+
+     const productByName_Id = await database.collection(COLLECTIONS.PRODUCTS_ITEMS).find({name: {$regex: filterName, $options:"$i" }})
+     .sort({id: -1}) // Ordenamos de manera descente
+     .toArray();
+    
+
+    let platform_id: Array<any> = args.platform_id;
+    let itemsProductId: Array<any> = [];
+    productByName_Id.map((item) => {
+      itemsProductId.push(item.id) 
+   })
+
+
+  let filters = { 
+    $and: [
+      { active: filterActive }, 
+      { product_id: { $in: itemsProductId } }, 
+      { platform_id: { $in: platform_id } }] 
+  }
+
+  let pipeline = [
+    { $match: filters }
+  ]
+
+    return await database.collection(COLLECTIONS.PRODUCTS).aggregate(pipeline)
+    .toArray()
+
+    }
 
 
 

@@ -7,6 +7,7 @@ import stripeResolvers from './stripe';
 import resolversProductMutation from './product';
 import resolversAllMutation from './all';
 import paypalResolvers from './paypal';
+import resolversPostMutation from './post';
 
 const mutationResolvers = GMR.merge([
     resolversUserMutation,
@@ -16,7 +17,8 @@ const mutationResolvers = GMR.merge([
     stripeResolvers,
     resolversProductMutation,
     resolversAllMutation,
-    paypalResolvers
+    paypalResolvers,
+    resolversPostMutation
 ]);
 
 export default mutationResolvers
