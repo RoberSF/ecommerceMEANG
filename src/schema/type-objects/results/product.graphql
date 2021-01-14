@@ -9,3 +9,14 @@ type ResultProduct implements Result {
     "Lista de productos de la tienda"
     products: [Product!]
 }
+
+type ResultProductSearch implements Result {
+    "Estado de la operación"
+    status: Boolean!
+    "Mensaje de la operación para dar feedback"
+    message: String!
+    "Producto de la tienda seleccionado"
+    product: Product
+    "Lista de productos de la tienda"
+    products: [Product!]
+}

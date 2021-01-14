@@ -1,7 +1,7 @@
 import { IResolvers } from 'graphql-tools';
 import { pagination } from '../../lib/pagination';
 import { COLLECTIONS } from '../../config/constants';
-import { findElements, findElementsOfferStock, findElementsSub, findElementsSubRandom, findOneElement } from '../../lib/db-functions';
+import { findElements, findElementsOfferStock, findElementsSub, findElementsSubRandom, findElementsSubSearch, findOneElement } from '../../lib/db-functions';
 
 const resolversProductsQuery: IResolvers = {
 
@@ -120,7 +120,25 @@ const resolversProductsQuery: IResolvers = {
             status: false,
             message: `Product details no cargados: ${error}`
         }}
-    }
+    },
+
+    async productsPlatformsSearch(_, { page, itemsPerPage, active, platform, searchValue}, { db }) {
+
+        // ** platform ahora tendría que se run array de strings
+        // console.log(platform);
+        try {
+            return {
+                status: true,
+                message: 'Lista de juegos correctamente cargada',
+                products: await findElementsSubSearch(db, {active: active, platform_id: platform, name: searchValue })
+            }
+        } catch (error) {
+            return {
+            info: null,
+            status: false,
+            message: `Lista de plataformas no cargada: ${error}`
+        }}
+       },
     
    },
  };

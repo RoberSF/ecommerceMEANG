@@ -46,5 +46,12 @@ type Query {
         "Seleccionar los elementos de manera aleatoria"
         random: Boolean = false): ResultProduct
 
+     productsPlatformsSearch(
+         page: Int = 1,
+         itemsPerPage: Int = 20,
+         active: ActiveFilterEnum = ACTIVE,
+         platform: [ID!]!,
+         searchValue: String!): ResultProductSearch
+
     productDetails(id: Int!): ResultProduct
 }

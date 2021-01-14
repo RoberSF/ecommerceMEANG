@@ -107,7 +107,6 @@ const resolversUsersQuery: IResolvers = {
     me(_, __, { token }) {
 
       let info = new JWT().verify(token); // Verificamos el valor del token si es válido
-      console.log(Object.values(info)[0].role)
       if (info === MESSAGES.TOKEN_VERICATION_FAILED) {
         return {
           status: false,
