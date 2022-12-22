@@ -47,7 +47,7 @@
         "graphql-merge-resolvers": "^1.1.16",
         "graphql-playground-middleware-express": "^1.7.12",
         "graphql-tools": "^4.0.8",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "mongodb": "^3.5.5",
         "ncp": "^2.0.0",
         "nodemailer": "^6.4.17",
